@@ -26,9 +26,11 @@ class EVF_Admin_Notices {
 	 * @var array
 	 */
 	private static $core_notices = array(
-		'update' => 'update_notice',
-		'review' => 'review_notice',
-		'survey' => 'survey_notice',
+		'update'          => 'update_notice',
+		'review'          => 'review_notice',
+		'survey'          => 'survey_notice',
+		'allow_usage'     => 'allow_usage_notice',
+		'php_deprecation' => 'php_deprecation_notice',
 	);
 
 	/**
@@ -80,6 +82,8 @@ class EVF_Admin_Notices {
 		}
 		self::add_notice( 'review' );
 		self::add_notice( 'survey' );
+		self::add_notice( 'allow_usage' );
+		self::add_notice( 'php_deprecation' );
 	}
 
 	/**
@@ -297,6 +301,44 @@ class EVF_Admin_Notices {
 
 		return $status;
 
+	}
+
+	/**
+	 * Include allow usage & discount notice.
+	 */
+	public static function allow_usage_notice() {
+
+		$show_notice              = true;
+		$allow_usage_notice_shown = get_option( 'everest_forms_allow_usage_notice_shown', false );
+		$allow_usage_tracking     = get_option( 'everest_forms_allow_usage_tracking' );
+		$activated                = get_option( 'everest_forms_activated' );
+
+		if ( 'yes' === $allow_usage_tracking || ( $activated + DAY_IN_SECONDS > time() ) || $allow_usage_notice_shown ) {
+			$show_notice = false;
+		}
+
+		if ( $show_notice && ( is_super_admin() || current_user_can( 'manage_everest_forms' ) ) ) {
+			include 'views/html-notice-allow-usage.php';
+		}
+	}
+
+	/**
+	 * Include PHp deprecation Notice
+	 */
+	public static function php_deprecation_notice() {
+		$php_version  = explode( '-', PHP_VERSION )[0];
+		$base_version = '7.2';
+		if ( version_compare( $php_version, $base_version, '<' ) ) {
+			$last_prompt_date = get_option( 'everest_forms_php_deprecated_notice_last_prompt_date', '' );
+			if ( empty( $last_prompt_date ) || strtotime( $last_prompt_date ) < strtotime( '-1 day' ) ) {
+				$prompt_limit = 3;
+				$prompt_count = get_option( 'everest_forms_php_deprecated_notice_prompt_count', 0 );
+
+				if ( $prompt_count < $prompt_limit ) {
+					include 'views/html-notice-php-deprecation.php';
+				}
+			}
+		}
 	}
 
 	/**

@@ -1,4 +1,10 @@
-<?php
+<?php // phpcs:ignore WordPress.Files.FileName.InvalidClassFileName
+/**
+ * Hustle_Modules_Common_Admin_Ajax
+ *
+ * @package Hustle
+ */
+
 if ( ! class_exists( 'Hustle_Modules_Common_Admin_Ajax' ) ) :
 	/**
 	 * Class Hustle_Modules_Common_Admin_Ajax.
@@ -8,8 +14,9 @@ if ( ! class_exists( 'Hustle_Modules_Common_Admin_Ajax' ) ) :
 	 */
 	class Hustle_Modules_Common_Admin_Ajax {
 
-		private $module_model_instance;
-
+		/**
+		 * Constructor
+		 */
 		public function __construct() {
 			add_action( 'wp_ajax_hustle_save_module', array( $this, 'save_module' ) );
 
@@ -37,6 +44,7 @@ if ( ! class_exists( 'Hustle_Modules_Common_Admin_Ajax' ) ) :
 		 * Saves new optin to db
 		 *
 		 * @since 1.0
+		 * @throws Exception Something went wrong.
 		 */
 		public function save_module() {
 
@@ -111,8 +119,8 @@ if ( ! class_exists( 'Hustle_Modules_Common_Admin_Ajax' ) ) :
 			$error_array = array( 'message' => __( 'Something went wrong while creating your pop-up. Please try again.', 'hustle' ) );
 
 			try {
-				$module_type = filter_input( INPUT_POST, 'module_type' );
-				$module_name = filter_input( INPUT_POST, 'module_name' );
+				$module_type = filter_input( INPUT_POST, 'module_type', FILTER_SANITIZE_SPECIAL_CHARS );
+				$module_name = filter_input( INPUT_POST, 'module_name', FILTER_SANITIZE_SPECIAL_CHARS );
 
 				if ( empty( $module_type ) || empty( $module_name ) ) {
 					$error_array['message'] = __( 'The module name or module type is missing. Please make sure you added a name for the module.' );
@@ -138,12 +146,12 @@ if ( ! class_exists( 'Hustle_Modules_Common_Admin_Ajax' ) ) :
 				);
 
 				if ( Hustle_Module_Model::SOCIAL_SHARING_MODULE !== $module_type ) {
-					$module_mode = filter_input( INPUT_POST, 'module_mode' );
+					$module_mode = filter_input( INPUT_POST, 'module_mode', FILTER_SANITIZE_SPECIAL_CHARS );
 					$module_mode = Hustle_Module_Model::OPTIN_MODE === $module_mode ? Hustle_Module_Model::OPTIN_MODE : Hustle_Module_Model::INFORMATIONAL_MODE;
 
 					$module_data['module_mode'] = $module_mode;
 
-					$template = filter_input( INPUT_POST, 'module_template' );
+					$template = filter_input( INPUT_POST, 'module_template', FILTER_SANITIZE_SPECIAL_CHARS );
 
 					$module_data['base_template'] = $template;
 
@@ -207,14 +215,15 @@ if ( ! class_exists( 'Hustle_Modules_Common_Admin_Ajax' ) ) :
 		 * -Reset tracking
 		 *
 		 * @since 4.0.3
+		 * @throws Exception Invalid module.
 		 */
 		public function handle_single_action() {
 
 			Opt_In_Utils::validate_ajax_call( 'hustle_single_action' );
 
-			$module_id = filter_input( INPUT_POST, 'moduleId' );
+			$module_id = filter_input( INPUT_POST, 'moduleId', FILTER_VALIDATE_INT );
 			$module    = Hustle_Model::get_module( $module_id );
-			$action    = filter_input( INPUT_POST, 'hustleAction' );
+			$action    = filter_input( INPUT_POST, 'hustleAction', FILTER_SANITIZE_SPECIAL_CHARS );
 
 			try {
 
@@ -223,7 +232,7 @@ if ( ! class_exists( 'Hustle_Modules_Common_Admin_Ajax' ) ) :
 					throw new Exception( __( 'Invalid module.', 'hustle' ) );
 				}
 
-				$context = filter_input( INPUT_POST, 'context' );
+				$context = filter_input( INPUT_POST, 'context', FILTER_SANITIZE_SPECIAL_CHARS );
 
 				switch ( $action ) {
 					case 'toggle-status':
@@ -250,6 +259,10 @@ if ( ! class_exists( 'Hustle_Modules_Common_Admin_Ajax' ) ) :
 						$this->action_reset_tracking( $module, $context );
 						break;
 
+					case 'purge-email-list':
+						$this->action_purge_email_list( $module, $context );
+						break;
+
 					default:
 						throw new Exception( __( 'Invalid action.', 'hustle' ) );
 				}
@@ -274,7 +287,7 @@ if ( ! class_exists( 'Hustle_Modules_Common_Admin_Ajax' ) ) :
 		 * @since 4.0.3
 		 *
 		 * @param Hustle_Model $module Hustle_Module_Model or Hustle_SShare_Model.
-		 * @throws Exception
+		 * @throws Exception When invalid permissions.
 		 */
 		private function action_toggle_module_status( Hustle_Model $module ) {
 
@@ -286,8 +299,10 @@ if ( ! class_exists( 'Hustle_Modules_Common_Admin_Ajax' ) ) :
 
 			if ( $was_published ) {
 				$module->deactivate();
+				$message = esc_html__( 'Module unpublished', 'hustle' );
 			} else {
 				$module->activate();
+				$message = esc_html__( 'Module published successfully', 'hustle' );
 			}
 
 			wp_send_json_success(
@@ -295,6 +310,7 @@ if ( ! class_exists( 'Hustle_Modules_Common_Admin_Ajax' ) ) :
 					'callback'            => 'actionToggleStatus',
 					'is_active'           => ! $was_published,
 					'is_tracking_enabled' => ! empty( $module->get_tracking_types() ),
+					'message'             => $message,
 				)
 			);
 		}
@@ -306,7 +322,7 @@ if ( ! class_exists( 'Hustle_Modules_Common_Admin_Ajax' ) ) :
 		 *
 		 * @param Hustle_Model $module Hustle_Module_Model or Hustle_SShare_Model.
 		 * @param string       $context dashboard|listing|edit_page.
-		 * @throws Exception
+		 * @throws Exception When invalid permissions.
 		 */
 		private function action_duplicate_module( Hustle_Model $module, $context ) {
 
@@ -354,7 +370,7 @@ if ( ! class_exists( 'Hustle_Modules_Common_Admin_Ajax' ) ) :
 				throw new Exception( 'invalid_permissions' );
 			}
 
-			$module_type = filter_input( INPUT_POST, 'type' );
+			$module_type = filter_input( INPUT_POST, 'type', FILTER_SANITIZE_SPECIAL_CHARS );
 
 			if ( ! $module_type || ! in_array( $module_type, Hustle_Data::get_module_types(), true ) ) {
 				throw new Exception( __( "The module's type is not valid.", 'hustle' ) );
@@ -376,12 +392,13 @@ if ( ! class_exists( 'Hustle_Modules_Common_Admin_Ajax' ) ) :
 
 			try {
 				// Get the file containing the module data.
-				$file = isset( $_FILES['import_file'] ) ? $_FILES['import_file'] : false;
+				$file = isset( $_FILES['import_file'] ) ? $_FILES['import_file'] : false;// phpcs:ignore
 
 				if ( ! $file ) {
 					throw new Exception( __( 'The file is required', 'hustle' ) );
 
 				} elseif ( ! empty( $file['error'] ) ) {
+					/* translators: error message */
 					throw new Exception( sprintf( __( 'Error: %s', 'hustle' ), esc_html( $file['error'] ) ) );
 				}
 
@@ -402,7 +419,7 @@ if ( ! class_exists( 'Hustle_Modules_Common_Admin_Ajax' ) ) :
 				$filename     = $wp_file['file'];
 				$file_content = file_get_contents( $filename ); // phpcs:ignore WordPress.WP.AlternativeFunctions
 
-				// Import file if it's json format
+				// Import file if it's json format.
 				$data = array();
 				if ( strpos( $filename, '.json' ) || strpos( $filename, '.JSON' ) ) {
 					$data = json_decode( $file_content, true );
@@ -429,7 +446,7 @@ if ( ! class_exists( 'Hustle_Modules_Common_Admin_Ajax' ) ) :
 				}
 
 				$source_mode = $data['data']['module_mode'];
-				$target_mode = $is_new_module ? filter_input( INPUT_POST, 'module_mode' ) : $module->module_mode;
+				$target_mode = $is_new_module ? filter_input( INPUT_POST, 'module_mode', FILTER_SANITIZE_SPECIAL_CHARS ) : $module->module_mode;
 
 				if ( Hustle_Module_Model::SOCIAL_SHARING_MODULE !== $module_type ) {
 
@@ -461,18 +478,19 @@ if ( ! class_exists( 'Hustle_Modules_Common_Admin_Ajax' ) ) :
 						}
 					}
 				}
+				$target_mode = sanitize_key( $target_mode );
 
 				// validate Schedule start/end date and replace it with empty if is invalid.
 				// ======================================================================.
 				$schedule_start_date = $data['meta']['settings']['schedule']['start_date'];
 				$schedule_end_date   = $data['meta']['settings']['schedule']['end_date'];
 				// Unset start_date & Set start immediately if start_date is invalid.
-				if ( date( 'n/j/Y', strtotime( $schedule_start_date ) ) !== $schedule_start_date ) :
+				if ( date( 'n/j/Y', strtotime( $schedule_start_date ) ) !== $schedule_start_date ) : // phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date
 					unset( $data['meta']['settings']['schedule']['start_date'] );
 					$data['meta']['settings']['schedule']['not_schedule_start'] = 1;
 				endif;
 				// Unset end_date & Set never end if end_date is invalid.
-				if ( date( 'n/j/Y', strtotime( $schedule_end_date ) ) !== $schedule_end_date ) :
+				if ( date( 'n/j/Y', strtotime( $schedule_end_date ) ) !== $schedule_end_date ) : // phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date
 					unset( $data['meta']['settings']['schedule']['end_date'] );
 					$data['meta']['settings']['schedule']['not_schedule_end'] = 1;
 				endif;
@@ -490,7 +508,7 @@ if ( ! class_exists( 'Hustle_Modules_Common_Admin_Ajax' ) ) :
 				wp_send_json_error(
 					array(
 						'callback' => 'actionImportDisplayError',
-						'message'  => $e->getMessage(),
+						'message'  => esc_html( $e->getMessage() ),
 					)
 				);
 			}
@@ -502,9 +520,9 @@ if ( ! class_exists( 'Hustle_Modules_Common_Admin_Ajax' ) ) :
 		 *
 		 * @since 4.0.3
 		 *
-		 * @param Hustle_Module_Model $module
-		 * @param string              $context 'dashboard'|'listing'
-		 * @throws Exception
+		 * @param Hustle_Module_Model $module Module.
+		 * @param string              $context 'dashboard'|'listing'.
+		 * @throws Exception When invalid permissions.
 		 */
 		private function action_delete_module( $module, $context ) {
 
@@ -522,7 +540,7 @@ if ( ! class_exists( 'Hustle_Modules_Common_Admin_Ajax' ) ) :
 					'notice'      => 'module_deleted',
 				);
 
-			wp_send_json_success( array( 'url' => add_query_arg( $url_params, 'admin.php' ) ) );
+				wp_send_json_success( array( 'url' => add_query_arg( $url_params, 'admin.php' ) ) );
 		}
 
 		/**
@@ -531,7 +549,7 @@ if ( ! class_exists( 'Hustle_Modules_Common_Admin_Ajax' ) ) :
 		 * @since 4.0.3
 		 *
 		 * @param Hustle_Model $module Hustle_Module_Model or Hustle_SShare_Model.
-		 * @throws Exception
+		 * @throws Exception When invalid permissions.
 		 */
 		private function action_toggle_tracking( Hustle_Model $module ) {
 
@@ -562,20 +580,21 @@ if ( ! class_exists( 'Hustle_Modules_Common_Admin_Ajax' ) ) :
 				}
 
 				$message = $was_tracking_enabled ?
-					sprintf( esc_html__( 'Tracking is disabled on %s', 'hustle' ), '<strong>' . esc_html( $module->module_name ) . '</strong>' ) :
-					sprintf( esc_html__( 'Tracking is enabled on %s', 'hustle' ), '<strong>' . esc_html( $module->module_name ) . '</strong>' );
+					sprintf( /* translators: module name */ esc_html__( 'Tracking is disabled on %s', 'hustle' ), '<strong>' . esc_html( $module->module_name ) . '</strong>' ) :
+					sprintf( /* translators: module name */ esc_html__( 'Tracking is enabled on %s', 'hustle' ), '<strong>' . esc_html( $module->module_name ) . '</strong>' );
 
 				$response['was_enabled'] = $was_tracking_enabled;
 
 			} else {
 				// Embeds and social sharing.
-				$enabled_track_types = filter_input( INPUT_POST, 'tracking_sub_types', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+				$enabled_track_types = filter_input( INPUT_POST, 'tracking_sub_types', FILTER_SANITIZE_SPECIAL_CHARS, FILTER_REQUIRE_ARRAY );
 				if ( is_null( $enabled_track_types ) ) {
 					$enabled_track_types = array();
 				}
 
 				$module->update_submitted_tracking_types( $enabled_track_types );
 
+				/* translators: module name */
 				$message = sprintf( esc_html__( 'Tracking updated on %s', 'hustle' ), '<strong>' . esc_html( $module->module_name ) . '</strong>' );
 
 				$response['enabled_types'] = implode( ',', $enabled_track_types );
@@ -593,7 +612,7 @@ if ( ! class_exists( 'Hustle_Modules_Common_Admin_Ajax' ) ) :
 		 *
 		 * @param Hustle_Model $module Hustle_Module_Model or Hustle_SShare_Model.
 		 * @param string       $context dashboard|listing|edit_page.
-		 * @throws Exception
+		 * @throws Exception When invalid permissions.
 		 */
 		private function action_reset_tracking( Hustle_Model $module, $context ) {
 
@@ -624,6 +643,41 @@ if ( ! class_exists( 'Hustle_Modules_Common_Admin_Ajax' ) ) :
 			wp_send_json_success( $args );
 		}
 
+		/**
+		 * Handle the "Purge Email List" module action.
+		 *
+		 * @param Hustle_Model $module Hustle_Module_Model or Hustle_SShare_Model.
+		 * @param string       $context dashboard|listing|edit_page.
+		 * @throws Exception When invalid permissions.
+		 */
+		private function action_purge_email_list( Hustle_Model $module, $context ) {
+
+			if ( ! Opt_In_Utils::is_user_allowed( 'hustle_access_emails' ) ) {
+				throw new Exception( 'invalid_permissions' );
+			}
+
+			Hustle_Entry_Model::delete_entries( $module->module_id );
+
+			if ( 'edit_page' !== $context ) {
+				$url_params = array(
+					'page'        => Hustle_Data::get_listing_page_by_module_type( $module->module_type ),
+					'show-notice' => 'success',
+					'notice'      => 'module_purge_emails',
+				);
+
+				$args = array( 'url' => add_query_arg( $url_params, 'admin.php' ) );
+			} else {
+				$args = array(
+					'notification' => array(
+						'status'  => 'success',
+						'message' => esc_html__( "Module's Email List successfully purged.", 'hustle' ),
+					),
+				);
+			}
+
+			wp_send_json_success( $args );
+		}
+
 
 		/**
 		 * Parse the imported data before saving.
@@ -634,7 +688,7 @@ if ( ! class_exists( 'Hustle_Modules_Common_Admin_Ajax' ) ) :
 		 * @param string $module_mode Target module's mode.
 		 * @return array
 		 *
-		 * @throws Exception
+		 * @throws Exception Settings to import isn't selected.
 		 */
 		private function apply_import_filters( $data, $module_mode ) {
 
@@ -646,7 +700,7 @@ if ( ! class_exists( 'Hustle_Modules_Common_Admin_Ajax' ) ) :
 				$module_mode = 'ssharing';
 			}
 
-			$metas = filter_input( INPUT_POST, $module_mode . '_metas', FILTER_REQUIRE_ARRAY );
+			$metas = filter_input( INPUT_POST, $module_mode . '_metas', FILTER_SANITIZE_SPECIAL_CHARS, FILTER_REQUIRE_ARRAY );
 
 			if ( empty( $metas ) ) {
 				throw new Exception( __( 'Please select the settings to import.', 'hustle' ) );
@@ -672,11 +726,11 @@ if ( ! class_exists( 'Hustle_Modules_Common_Admin_Ajax' ) ) :
 		 *
 		 * @since 4.0.0
 		 *
-		 * @param Hustle_Module_Model $module
-		 * @param string              $module_type
-		 * @param array               $data
+		 * @param Hustle_Module_Model $module Module.
+		 * @param string              $module_type Module type.
+		 * @param array               $data Data.
 		 *
-		 * @throws Exception
+		 * @throws Exception Access denied.
 		 */
 		private function import_into_existing_module( $module, $module_type, $data ) {
 
@@ -726,11 +780,11 @@ if ( ! class_exists( 'Hustle_Modules_Common_Admin_Ajax' ) ) :
 		 *
 		 * @since 4.0
 		 *
-		 * @param string $module_type
-		 * @param string $target_mode
-		 * @param array  $data
+		 * @param string $module_type Module type.
+		 * @param string $target_mode Target mode.
+		 * @param array  $data Data.
 		 *
-		 * @throws Exception
+		 * @throws Exception Creation process was failed.
 		 */
 		private function import_new_module( $module_type, $target_mode, $data ) {
 			Opt_In_Utils::is_user_allowed_ajax( 'hustle_create' );
@@ -778,9 +832,9 @@ if ( ! class_exists( 'Hustle_Modules_Common_Admin_Ajax' ) ) :
 		 */
 		public function handle_bulk_action() {
 			Opt_In_Utils::validate_ajax_call( 'hustle-bulk-action' );
-			$type   = filter_input( INPUT_POST, 'type' );
-			$hustle = filter_input( INPUT_POST, 'hustle' );
-			$ids    = isset( $_POST['ids'] ) ? $_POST['ids'] : array(); // phpcs:ignore WordPress.Security.NonceVerification.NoNonceVerification
+			$type   = filter_input( INPUT_POST, 'type', FILTER_SANITIZE_SPECIAL_CHARS );
+			$hustle = filter_input( INPUT_POST, 'hustle', FILTER_SANITIZE_SPECIAL_CHARS );
+			$ids    = filter_input( INPUT_POST, 'ids', FILTER_SANITIZE_SPECIAL_CHARS, FILTER_REQUIRE_ARRAY );
 			if ( ! is_array( $ids ) || empty( $ids ) ) {
 				wp_send_json_error( __( 'Failed', 'hustle' ) );
 			}
@@ -796,6 +850,7 @@ if ( ! class_exists( 'Hustle_Modules_Common_Admin_Ajax' ) ) :
 				}
 
 				$can_edit   = Opt_In_Utils::is_user_allowed( 'hustle_edit_module', $id );
+				$can_emails = Opt_In_Utils::is_user_allowed( 'hustle_access_emails' );
 				$can_create = current_user_can( 'hustle_create' );
 
 				switch ( $hustle ) {
@@ -842,6 +897,12 @@ if ( ! class_exists( 'Hustle_Modules_Common_Admin_Ajax' ) ) :
 						}
 						break;
 
+					case 'purge-email-list':
+						if ( $can_emails ) {
+							Hustle_Entry_Model::delete_entries( $id );
+						}
+						break;
+
 					default:
 						wp_send_json_error( __( 'Failed', 'hustle' ) );
 				}
@@ -849,10 +910,13 @@ if ( ! class_exists( 'Hustle_Modules_Common_Admin_Ajax' ) ) :
 			wp_send_json_success();
 		}
 
+		/**
+		 * Render module
+		 */
 		public function render_module() {
 			Opt_In_Utils::validate_ajax_call( 'hustle_gutenberg_get_module' );
 
-			$shortcode_id = filter_input( INPUT_GET, 'shortcode_id' );
+			$shortcode_id = filter_input( INPUT_GET, 'shortcode_id', FILTER_SANITIZE_SPECIAL_CHARS );
 
 			if ( ! $shortcode_id ) {
 				wp_send_json_error();
@@ -870,13 +934,9 @@ if ( ! class_exists( 'Hustle_Modules_Common_Admin_Ajax' ) ) :
 			} else {
 				$sub_type = '';
 			}
-			ob_start();
 
-			$module->display( $sub_type, '', true );
-
-			$html = ob_get_clean();
-
-			$style = '<style type="text/css" class="hustle-module-styles-' . $module->id . '">' . $module->get_decorated()->get_module_styles( $module->module_type ) . '</style>';
+			$html  = $module->display( $sub_type, '', true );
+			$style = '<style type="text/css" class="hustle-module-styles-' . esc_attr( $module->id ) . '">' . $module->get_decorated()->get_module_styles( $module->module_type ) . '</style>';
 
 			$response = array(
 				'data'  => array(
@@ -901,7 +961,7 @@ if ( ! class_exists( 'Hustle_Modules_Common_Admin_Ajax' ) ) :
 		public function get_module_id_by_shortcode() {
 			Opt_In_Utils::validate_ajax_call( 'hustle_gutenberg_get_module' );
 
-			$shortcode_id = filter_input( INPUT_GET, 'shortcode_id' );
+			$shortcode_id = filter_input( INPUT_GET, 'shortcode_id', FILTER_SANITIZE_SPECIAL_CHARS );
 
 			$module_id = Hustle_Model::get_module_id_by_shortcode_id( $shortcode_id );
 			$module    = Hustle_Model::get_module( $module_id );
@@ -922,7 +982,7 @@ if ( ! class_exists( 'Hustle_Modules_Common_Admin_Ajax' ) ) :
 		public function get_new_condition_ids() {
 			global $wpdb;
 
-			$post_type = filter_input( INPUT_POST, 'postType' );
+			$post_type = filter_input( INPUT_POST, 'postType', FILTER_SANITIZE_SPECIAL_CHARS );
 			$search    = filter_input( INPUT_POST, 'search' );
 			$result    = array();
 			$limit     = 30;
@@ -946,7 +1006,7 @@ if ( ! class_exists( 'Hustle_Modules_Common_Admin_Ajax' ) ) :
 					$result = array_map( array( 'Hustle_Module_Page_Abstract', 'terms_to_select2_data' ), get_categories( $args ) );
 				} else {
 					global $wpdb;
-					$result = $wpdb->get_results(
+					$result = $wpdb->get_results( // phpcs:ignore
 						$wpdb->prepare(
 							"SELECT ID as id, post_title as text FROM {$wpdb->posts} "
 							. "WHERE post_type = %s AND post_status = 'publish' AND post_title LIKE %s LIMIT " . intval( $limit ),

@@ -1,23 +1,22 @@
 === Advanced Google reCAPTCHA ===
 
-Contributors: wpconcern, maneshtimilsina, rabmalin
-Tags: captcha, recaptcha, google-recaptcha, comment-recaptcha, login-recaptcha, brute-force-attacks, spam, block, bots, brute, protect, comments, registration, woocommerce, google-captcha, woocommerce-recaptcha, recaptcha-for-login, recaptcha-for-woocommerce, comment-captcha, comments-recaptcha, recaptcha-for-comment, recaptcha-for-edd, edd-login-recaptcha, buddypress-recaptcha, registration-recaptcha, lost-password-recaptcha, password-reset-recaptcha
+Contributors: WebFactory
+Tags: captcha, recaptcha, google recaptcha, comment recaptcha, login recaptcha, brute force, spam, block, bots, protect, registration, google captcha, woocommerce recaptcha, comments captcha, ClassicPress
 Requires at least: 4.9
 Requires PHP: 5.6
-Tested up to: 6.1
-Stable tag: 1.0.13
+Tested up to: 6.3
+Stable tag: 1.0.15
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
-Donate link: https://wpconcern.com/plugins/advanced-google-recaptcha/
 
-Protect your WordPress against spam comments and brute-force attacks using Google reCAPTCHA
+Captcha protection against spam comments & brute-force attacks using Google reCAPTCHA.
 
 == Description ==
-Advanced Google reCAPTCHA will safeguard your WordPress site from spam comments and brute force attacks. With this plugin, you can easily add Google reCAPTCHA to WordPress comment form, login form and other forms.
+Advanced Google reCAPTCHA will safeguard your WordPress site from spam comments & brute force attacks. With this captcha plugin, you can easily add Google reCAPTCHA to WordPress comment form, login form, and other forms.
 
-Using Advanced Google reCAPTCHA, you can be safe from spam comments and protect user accounts, WooCommerce, Easy Digital Downloads, BuddyPress and other forms from brute-force attacks.
+Using Advanced Google reCAPTCHA (best captcha on the market), you'll be safe from spam comments and protect user accounts, WooCommerce, Easy Digital Downloads, BuddyPress and other forms from brute-force attacks.
 
-[Homepage](https://wpconcern.com/plugins/advanced-google-recaptcha/) | [Documentation](https://wpconcern.com/documentation/advanced-google-recaptcha/)
+[Homepage](https://getwpcaptcha.com)
 
 Works for:
 
@@ -60,6 +59,12 @@ Yes, it works for WordPress comment form.
 9. Plugin settings
 
 == Changelog ==
+
+= 1.0.15 - 29 May 2023 =
+* Update packages
+
+= 1.0.14 - 20 Feb 2023 =
+* Fix PHP 8 issue
 
 = 1.0.13 - 15 Dec 2022 =
 * Fix admin links

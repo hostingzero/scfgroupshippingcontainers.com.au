@@ -1,4 +1,10 @@
-<?php
+<?php // phpcs:ignore WordPress.Files.FileName.InvalidClassFileName
+/**
+ * Hustle_Zapier_Form_Settings class
+ *
+ * @package Hustle
+ */
+
 if ( ! class_exists( 'Hustle_Zapier_Form_Settings' ) ) :
 
 	/**
@@ -15,7 +21,7 @@ if ( ! class_exists( 'Hustle_Zapier_Form_Settings' ) ) :
 		 */
 		public function form_settings_wizards() {
 			// already filtered on Abstract
-			// numerical array steps
+			// numerical array steps.
 			return array(
 				// 0
 				array(
@@ -29,6 +35,7 @@ if ( ! class_exists( 'Hustle_Zapier_Form_Settings' ) ) :
 		 * Check if step is completed
 		 *
 		 * @since 3.0.5
+		 * @param array $submitted_data Submitted data.
 		 * @return bool
 		 */
 		public function first_step_is_completed( $submitted_data ) {
@@ -44,7 +51,7 @@ if ( ! class_exists( 'Hustle_Zapier_Form_Settings' ) ) :
 		 * @since 3.0.5
 		 * @since 4.0 param $validate removed.
 		 *
-		 * @param array $submitted_data
+		 * @param array $submitted_data Submitted data.
 		 * @return array
 		 */
 		public function first_step_callback( $submitted_data ) {
@@ -73,12 +80,12 @@ if ( ! class_exists( 'Hustle_Zapier_Form_Settings' ) ) :
 			if ( ! isset( $error_message ) ) {
 				$has_errors = false;
 			} else {
-				$step_html .= '<span class="sui-error-message">' . $error_message . '</span>';
+				$step_html .= '<span class="sui-error-message">' . esc_html( $error_message ) . '</span>';
 				$has_errors = true;
 			}
 
 			$notice_message = sprintf(
-				/* translators: ... */
+				/* translators: 1. Open 'a' tag. 2. Close 'a' tag. 3. Trigger name. */
 				esc_html__( 'Please go %1$shere%2$s if you do not have any ZAP created. Remember to choose %3$s as Trigger App.', 'hustle' ),
 				'<a href="https://zapier.com/app/editor/" target="_blank">',
 				'</a>',
@@ -213,7 +220,7 @@ if ( ! class_exists( 'Hustle_Zapier_Form_Settings' ) ) :
 		 *
 		 * @since 4.0
 		 *
-		 * @param array $submitted_data
+		 * @param array $submitted_data Submitted data.
 		 * @return array
 		 */
 		private function get_first_step_options( $submitted_data ) {
@@ -268,8 +275,8 @@ if ( ! class_exists( 'Hustle_Zapier_Form_Settings' ) ) :
 		 *
 		 * @since 4.0
 		 *
-		 * @param string $multi_id
-		 * @param array  $settings
+		 * @param string $multi_id Multi ID.
+		 * @param array  $settings Settings.
 		 * @return boolean
 		 */
 		public function is_multi_form_settings_complete( $multi_id, $settings ) {
@@ -285,7 +292,7 @@ if ( ! class_exists( 'Hustle_Zapier_Form_Settings' ) ) :
 		 * Disconnect multi_id instance of a provider from a module.
 		 *
 		 * @since 4.0
-		 * @param array $submitted_data
+		 * @param array $submitted_data Submitted data.
 		 */
 		public function disconnect_form( $submitted_data ) {
 

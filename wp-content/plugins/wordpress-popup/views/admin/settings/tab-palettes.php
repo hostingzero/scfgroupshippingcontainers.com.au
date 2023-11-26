@@ -56,8 +56,7 @@
 									class="sui-button-icon sui-button-red sui-tooltip hustle-delete-button"
 									data-id="<?php echo esc_attr( $slug ); ?>"
 									data-title="<?php esc_attr_e( 'Delete Color Palette', 'hustle' ); ?>"
-									<?php /* translators: palette name */ ?>
-									data-description="<?php printf( esc_html__( 'Are you sure you want to delete the %s color palette permanently? Note that the modules using this color palette will fallback to the default color palette.', 'hustle' ), esc_attr( $data['name'] ) ); ?>"
+									data-description="<?php /* translators: palette name */ printf( esc_html__( 'Are you sure you want to delete the %s color palette permanently? Note that the modules using this color palette will fallback to the default color palette.', 'hustle' ), esc_attr( $data['name'] ) ); ?>"
 									data-tooltip="<?php esc_attr_e( 'Delete Palette', 'hustle' ); ?>"
 								>
 									<span class="sui-icon-trash" aria-hidden="true"></span>

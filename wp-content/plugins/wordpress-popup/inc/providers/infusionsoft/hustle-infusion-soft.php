@@ -1,9 +1,19 @@
-<?php
+<?php // phpcs:ignore WordPress.Files.FileName.InvalidClassFileName
+/**
+ * Hustle_Infusion_Soft class
+ *
+ * @package Hustle
+ */
 
 if ( ! class_exists( 'Hustle_Infusion_Soft' ) ) :
 
 	include_once 'hustle-infusion-soft-api.php';
+	include_once 'class-opt-in-infusionsoft-xml-res.php';
 
+
+	/**
+	 * Class Hustle_Infusion_Soft
+	 */
 	class Hustle_Infusion_Soft extends Hustle_Provider_Abstract {
 
 		const SLUG = 'infusionsoft';
@@ -12,11 +22,15 @@ if ( ! class_exists( 'Hustle_Infusion_Soft' ) ) :
 		const CLIENT_SECRET = 'inc_opt_infusionsoft_clientsecret';
 
 		/**
-		 * @var Opt_In_Infusionsoft_Api $api
+		 * Api
+		 *
+		 * @var Opt_In_Infusionsoft_Api
 		 */
 		protected static $api;
 		/**
-		 * @var WP_Error $errors
+		 * Errors
+		 *
+		 * @var array
 		 */
 		protected static $errors;
 
@@ -27,38 +41,46 @@ if ( ! class_exists( 'Hustle_Infusion_Soft' ) ) :
 		 *
 		 * @var self|null
 		 */
-		protected static $_instance = null;
+		protected static $instance = null;
 
 		/**
+		 * Slug
+		 *
 		 * @since 3.0.5
 		 * @var string
 		 */
-		protected $_slug = 'infusionsoft';
+		protected $slug = 'infusionsoft';
 
 		/**
+		 * Version
+		 *
 		 * @since 3.0.5
 		 * @var string
 		 */
-		protected $_version = '1.0';
+		protected $version = '1.0';
 
 		/**
+		 * Class
+		 *
 		 * @since 3.0.5
 		 * @var string
 		 */
-		protected $_class = __CLASS__;
+		protected $class = __CLASS__;
 
 		/**
+		 * Title
+		 *
 		 * @since 3.0.5
 		 * @var string
 		 */
-		protected $_title = 'Infusionsoft';
+		protected $title = 'Keap';
 
 		/**
 		 * Class name of form settings
 		 *
 		 * @var string
 		 */
-		protected $_form_settings = 'Hustle_Infusion_Soft_Form_Settings';
+		protected $form_settings = 'Hustle_Infusion_Soft_Form_Settings';
 
 		/**
 		 * Class name of form hooks
@@ -66,7 +88,7 @@ if ( ! class_exists( 'Hustle_Infusion_Soft' ) ) :
 		 * @since 4.0
 		 * @var string
 		 */
-		protected $_form_hooks = 'Hustle_InfusionSoft_Form_Hooks';
+		protected $form_hooks = 'Hustle_InfusionSoft_Form_Hooks';
 
 		/**
 		 * Array of options which should exist for confirming that settings are completed
@@ -74,14 +96,14 @@ if ( ! class_exists( 'Hustle_Infusion_Soft' ) ) :
 		 * @since 4.0
 		 * @var array
 		 */
-		protected $_completion_options = array( 'api_key', 'account_name' );
+		protected $completion_options = array( 'api_key', 'account_name' );
 
 		/**
 		 * Provider constructor.
 		 */
 		public function __construct() {
-			$this->_icon_2x = plugin_dir_url( __FILE__ ) . 'images/icon.png';
-			$this->_logo_2x = plugin_dir_url( __FILE__ ) . 'images/logo.png';
+			$this->icon_2x = plugin_dir_url( __FILE__ ) . 'images/icon.png';
+			$this->logo_2x = plugin_dir_url( __FILE__ ) . 'images/logo.png';
 		}
 
 		/**
@@ -90,21 +112,20 @@ if ( ! class_exists( 'Hustle_Infusion_Soft' ) ) :
 		 * @return self|null
 		 */
 		public static function get_instance() {
-			if ( is_null( self::$_instance ) ) {
-				self::$_instance = new self();
+			if ( is_null( self::$instance ) ) {
+				self::$instance = new self();
 			}
 
-			return self::$_instance;
+			return self::$instance;
 		}
 
 		/**
 		 * Returns a cached api
 		 *
-		 * @param $api_key
-		 * @param $app_name
+		 * @param string $api_key Api key.
+		 * @param string $app_name App name.
 		 * @return Opt_In_Infusionsoft_Api
 		 */
-		// protected static function api( $api_key, $app_name){
 		public static function api( $api_key, $app_name ) {
 
 			if ( empty( self::$api ) ) {
@@ -140,7 +161,7 @@ if ( ! class_exists( 'Hustle_Infusion_Soft' ) ) :
 		 *
 		 * @since 4.0
 		 *
-		 * @param array $submitted_data
+		 * @param array $submitted_data Submitted data.
 		 * @return array
 		 */
 		public function configure_api_key( $submitted_data ) {
@@ -153,20 +174,22 @@ if ( ! class_exists( 'Hustle_Infusion_Soft' ) ) :
 			$current_data    = $this->get_current_data( $default_data, $submitted_data );
 			$is_submit       = isset( $submitted_data['api_key'] ) && isset( $submitted_data['account_name'] );
 			$global_multi_id = $this->get_global_multi_id( $submitted_data );
+			$api_key_valid   = true;
 
-			$api_key_valid = $api_account_name_valid = true;
+			$api_account_name_valid = true;
 
 			if ( $is_submit ) {
 
 				$api_key_valid          = ! empty( $current_data['api_key'] );
 				$api_account_name_valid = ! empty( $current_data['account_name'] );
-				$api_key_validated      = $api_key_valid
-									 && $api_account_name_valid
-									 && $this->validate_credentials( $submitted_data['api_key'], $submitted_data['account_name'] );
+				$api_key_validated      = $api_key_valid && $api_account_name_valid
+					&& $this->validate_credentials( $submitted_data['api_key'], $submitted_data['account_name'] );
 				if ( ! $api_key_validated ) {
 					$error_message = $this->provider_connection_falied();
-					$api_key_valid = $api_account_name_valid = false;
+					$api_key_valid = false;
 					$has_errors    = true;
+
+					$api_account_name_valid = false;
 				}
 
 				if ( ! $has_errors ) {
@@ -176,9 +199,9 @@ if ( ! class_exists( 'Hustle_Infusion_Soft' ) ) :
 						'name'         => $current_data['name'],
 					);
 					// If not active, activate it.
-					// TODO: Wrap this in a friendlier method
-					if ( Hustle_Provider_Utils::is_provider_active( $this->_slug )
-							|| Hustle_Providers::get_instance()->activate_addon( $this->_slug ) ) {
+					// TODO: Wrap this in a friendlier method.
+					if ( Hustle_Provider_Utils::is_provider_active( $this->slug )
+							|| Hustle_Providers::get_instance()->activate_addon( $this->slug ) ) {
 						$this->save_multi_settings_values( $global_multi_id, $settings_to_save );
 					} else {
 						$error_message = __( "Provider couldn't be activated.", 'hustle' );
@@ -189,7 +212,7 @@ if ( ! class_exists( 'Hustle_Infusion_Soft' ) ) :
 				if ( ! $has_errors ) {
 
 					return array(
-						'html'         => Hustle_Provider_Utils::get_integration_modal_title_markup( __( 'InfusionSoft Added', 'hustle' ), __( 'You can now go to your pop-ups, slide-ins and embeds and assign them to this integration', 'hustle' ) ),
+						'html'         => Hustle_Provider_Utils::get_integration_modal_title_markup( __( 'Keap Added', 'hustle' ), __( 'You can now go to your pop-ups, slide-ins and embeds and assign them to this integration', 'hustle' ) ),
 						'buttons'      => array(
 							'close' => array(
 								'markup' => Hustle_Provider_Utils::get_provider_button_markup( __( 'Close', 'hustle' ), 'sui-button-ghost', 'close' ),
@@ -199,7 +222,7 @@ if ( ! class_exists( 'Hustle_Infusion_Soft' ) ) :
 						'has_errors'   => false,
 						'notification' => array(
 							'type' => 'success',
-							'text' => '<strong>' . $this->get_title() . '</strong> ' . __( 'Successfully connected', 'hustle' ),
+							'text' => '<strong>' . $this->get_title() . '</strong> ' . esc_html__( 'Successfully connected', 'hustle' ),
 						),
 					);
 
@@ -227,7 +250,7 @@ if ( ! class_exists( 'Hustle_Infusion_Soft' ) ) :
 						'error'   => array(
 							'type'  => 'error',
 							'class' => $api_key_valid ? 'sui-hidden' : '',
-							'value' => __( 'Please enter a valid InfusionSoft encrypted API key', 'hustle' ),
+							'value' => __( 'Please enter a valid Keap encrypted API key', 'hustle' ),
 						),
 					),
 				),
@@ -251,7 +274,7 @@ if ( ! class_exists( 'Hustle_Infusion_Soft' ) ) :
 						'error'        => array(
 							'type'  => 'error',
 							'class' => $api_account_name_valid ? 'sui-hidden' : '',
-							'value' => __( 'Please enter a valid InfusionSoft account name', 'hustle' ),
+							'value' => __( 'Please enter a valid Keap account name', 'hustle' ),
 						),
 					),
 				),
@@ -291,13 +314,13 @@ if ( ! class_exists( 'Hustle_Infusion_Soft' ) ) :
 			}
 
 			$step_html = Hustle_Provider_Utils::get_integration_modal_title_markup(
-				__( 'Configure InfusionSoft', 'hustle' ),
+				__( 'Configure Keap', 'hustle' ),
 				sprintf(
 					/* translators: 1. opening 'a' tag to the API key guide, 2. closing 'a' tag, 3. opening 'a' tag to the account name guide */
 					__( 'Log in to your account to get your %1$sAPI key (encrypted)%2$s and %3$saccount name%2$s.', 'hustle' ),
-					'<a target="_blank" href="http://help.infusionsoft.com/userguides/get-started/tips-and-tricks/api-key">',
+					'<a target="_blank" href="https://wpmudev.com/docs/wpmu-dev-plugins/hustle/#keap-api-keys">',
 					'</a>',
-					'<a target="_blank" href="http://help.mobit.com/infusionsoft-integration/how-to-find-your-infusionsoft-account-name" >'
+					'<a target="_blank" href="https://wpmudev.com/docs/wpmu-dev-plugins/hustle/#keap-account-name" >'
 				)
 			);
 
@@ -351,8 +374,8 @@ if ( ! class_exists( 'Hustle_Infusion_Soft' ) ) :
 		 *
 		 * @since 4.0
 		 *
-		 * @param string $api_key
-		 * @param string $account_name
+		 * @param string $api_key Api key.
+		 * @param string $account_name Account name.
 		 * @return bool
 		 */
 		private function validate_credentials( $api_key, $account_name ) {
@@ -361,11 +384,11 @@ if ( ! class_exists( 'Hustle_Infusion_Soft' ) ) :
 			}
 
 			try {
-				// Check if credentials are valid
+				// Check if credentials are valid.
 				$_lists = self::api( $api_key, $account_name )->get_lists();
 
 				if ( is_wp_error( $_lists ) && ! empty( $_lists ) ) {
-					Hustle_Provider_Utils::maybe_log( __METHOD__, __( 'Invalid InfusionSoft credentials.', 'hustle' ) );
+					Hustle_Provider_Utils::maybe_log( __METHOD__, __( 'Invalid Keap credentials.', 'hustle' ) );
 					return false;
 				}
 			} catch ( Exception $e ) {
@@ -376,6 +399,11 @@ if ( ! class_exists( 'Hustle_Infusion_Soft' ) ) :
 			return true;
 		}
 
+		/**
+		 * Get 3.0 provider mappings
+		 *
+		 * @return type
+		 */
 		public function get_30_provider_mappings() {
 			return array(
 				'api_key'      => 'api_key',

@@ -6,9 +6,12 @@
  * @since 4.3.0
  */
 
-// phpcs:disable Generic.WhiteSpace.ScopeIndent.Incorrect
+global $wp_locale;
 
-$component = '.hustle-layout .hustle-layout-content';
+$is_rtl = $wp_locale->is_rtl();
+
+$component              = '.hustle-layout .hustle-layout-content';
+$component_main_wrapper = '.hustle-main-wrapper';
 
 // SETTINGS: Padding.
 $padding_top    = ( '' !== $advanced['layout_content_padding_top'] ) ? $advanced['layout_content_padding_top'] . $advanced['layout_content_padding_unit'] : '0';
@@ -16,7 +19,7 @@ $padding_right  = ( '' !== $advanced['layout_content_padding_right'] ) ? $advanc
 $padding_bottom = ( '' !== $advanced['layout_content_padding_bottom'] ) ? $advanced['layout_content_padding_bottom'] . $advanced['layout_content_padding_unit'] : '0';
 $padding_left   = ( '' !== $advanced['layout_content_padding_left'] ) ? $advanced['layout_content_padding_left'] . $advanced['layout_content_padding_unit'] : '0';
 
-$padding = $padding_top . ' ' . $padding_right . ' ' . $padding_bottom . ' ' . $padding_left;
+$padding = ( ! $is_rtl ) ? $padding_top . ' ' . $padding_right . ' ' . $padding_bottom . ' ' . $padding_left : $padding_top . ' ' . $padding_left . ' ' . $padding_bottom . ' ' . $padding_right;
 
 $mobile_padding_top    = ( '' !== $advanced['layout_content_padding_top_mobile'] ) ? $advanced['layout_content_padding_top_mobile'] . $advanced['layout_content_padding_unit_mobile'] : $padding_top;
 $mobile_padding_right  = ( '' !== $advanced['layout_content_padding_right_mobile'] ) ? $advanced['layout_content_padding_right_mobile'] . $advanced['layout_content_padding_unit_mobile'] : $padding_right;
@@ -50,7 +53,7 @@ $radius_topright    = ( '' !== $advanced['layout_content_radius_top_right'] ) ? 
 $radius_bottomright = ( '' !== $advanced['layout_content_radius_bottom_right'] ) ? $advanced['layout_content_radius_bottom_right'] . $advanced['layout_content_radius_unit'] : '0';
 $radius_bottomleft  = ( '' !== $advanced['layout_content_radius_bottom_left'] ) ? $advanced['layout_content_radius_bottom_left'] . $advanced['layout_content_radius_unit'] : '0';
 
-$border_radius = $radius_topleft . ' ' . $radius_topright . ' ' . $radius_bottomright . ' ' . $radius_bottomleft;
+$border_radius = ( ! $is_rtl ) ? $radius_topleft . ' ' . $radius_topright . ' ' . $radius_bottomright . ' ' . $radius_bottomleft : $radius_topright . ' ' . $radius_topleft . ' ' . $radius_bottomleft . ' ' . $radius_bottomright;
 
 $mobile_radius_topleft     = ( '' !== $advanced['layout_content_radius_top_left_mobile'] ) ? $advanced['layout_content_radius_top_left_mobile'] . $advanced['layout_content_radius_unit_mobile'] : $radius_topleft;
 $mobile_radius_topright    = ( '' !== $advanced['layout_content_radius_top_right_mobile'] ) ? $advanced['layout_content_radius_top_right_mobile'] . $advanced['layout_content_radius_unit_mobile'] : $radius_topright;
@@ -60,8 +63,8 @@ $mobile_radius_bottomleft  = ( '' !== $advanced['layout_content_radius_bottom_le
 $mobile_border_radius = ( ! $is_mobile_enabled || ( $is_mobile_enabled && $default_advanced ) ) ? $border_radius : $mobile_radius_topleft . ' ' . $mobile_radius_topright . ' ' . $mobile_radius_bottomright . ' ' . $mobile_radius_bottomleft;
 
 // SETTINGS: Box Shadow.
-$shadow_offset_x = ( '' !== $advanced['layout_content_drop_shadow_x'] ) ? $advanced['layout_content_drop_shadow_x'] . $advanced['layout_content_drop_shadow_unit'] : '0';
-$shadow_offset_y = ( '' !== $advanced['layout_content_drop_shadow_y'] ) ? $advanced['layout_content_drop_shadow_y'] . $advanced['layout_content_drop_shadow_unit'] : '0';
+$shadow_offset_x = ( '' !== $advanced['layout_content_drop_shadow_x'] ) ? ( ( ! $is_rtl ) ? $advanced['layout_content_drop_shadow_x'] : ( -1 * $advanced['layout_content_drop_shadow_x'] ) ) . $advanced['layout_content_drop_shadow_unit'] : '0';
+$shadow_offset_y = ( '' !== $advanced['layout_content_drop_shadow_y'] ) ? ( ( ! $is_rtl ) ? $advanced['layout_content_drop_shadow_y'] : ( -1 * $advanced['layout_content_drop_shadow_y'] ) ) . $advanced['layout_content_drop_shadow_unit'] : '0';
 $shadow_blur     = ( '' !== $advanced['layout_content_drop_shadow_blur'] ) ? $advanced['layout_content_drop_shadow_blur'] . $advanced['layout_content_drop_shadow_unit'] : '0';
 $shadow_spread   = ( '' !== $advanced['layout_content_drop_shadow_spread'] ) ? $advanced['layout_content_drop_shadow_spread'] . $advanced['layout_content_drop_shadow_unit'] : '0';
 $shadow_color    = $colors['layout_content_drop_shadow'];
@@ -78,6 +81,16 @@ $mobile_box_shadow = ( ! $is_mobile_enabled || ( $is_mobile_enabled && $default_
 // SETTINGS: Colors.
 $background_color = $colors['layout_content_bg'];
 
+// SETTINGS: Close icon.
+$position               = $design['close_icon_position'];
+$position_mobile        = ( '' !== $design['close_icon_position_mobile'] && $is_mobile_enabled ) ? $design['close_icon_position_mobile'] : $design['close_icon_position'];
+$alignment_y            = $design['close_icon_alignment_y'];
+$alignment_y_mobile     = ( '' !== $design['close_icon_alignment_y_mobile'] && $is_mobile_enabled ) ? $design['close_icon_alignment_y_mobile'] : $design['close_icon_alignment_y'];
+$icon_style             = $design['close_icon_style'];
+$icon_style_mobile      = ( '' !== $design['close_icon_style_mobile'] && $is_mobile_enabled ) ? $design['close_icon_style_mobile'] : $design['close_icon_style'];
+$close_icon_size        = $design['close_icon_size'];
+$close_icon_size_mobile = ( '' !== $design['close_icon_size_mobile'] && $is_mobile_enabled ) ? $design['close_icon_size_mobile'] : $design['close_icon_size'];
+
 // ==================================================
 // Mobile styles.
 $style     .= ' ';
@@ -93,6 +106,19 @@ $style     .= $prefix_mobile . $component . ' {';
 	$style .= ( ! $is_vanilla ) ? 'box-shadow: ' . $mobile_box_shadow . ';' : '';
 $style     .= '}';
 
+$style     .= $prefix_mobile . $component_main_wrapper . ' {';
+	$style .= 'position: relative;';
+if ( 'outside' === $position_mobile ) {
+	if ( 'center' === $alignment_y_mobile ) {
+		$style .= 'padding: 0;';
+	} else {
+		$style .= ( 'top' === $alignment_y_mobile ) ? 'padding:' . ( $close_icon_size_mobile + 20 ) . 'px 0 0;' : 'padding: 0 0 ' . ( $close_icon_size_mobile + 20 ) . 'px';
+	}
+} else {
+	$style .= 'padding: 0;';
+}
+$style .= '}';
+
 // Desktop styles.
 if ( $is_mobile_enabled ) {
 	$style         .= $breakpoint . ' {';
@@ -106,4 +132,18 @@ if ( $is_mobile_enabled ) {
 			$style .= ( ! $is_vanilla ) ? 'box-shadow: ' . $box_shadow . ';' : '';
 		$style     .= '}';
 	$style         .= '}';
+
+	$style     .= $breakpoint . ' {';
+		$style .= $prefix_desktop . $component_main_wrapper . ' {';
+	if ( 'outside' === $position ) {
+		if ( 'center' === $alignment_y ) {
+			$style .= 'padding: 0;';
+		} else {
+			$style .= ( 'top' === $alignment_y ) ? 'padding:' . ( $close_icon_size + 20 ) . 'px 0 0;' : 'padding: 0 0 ' . ( $close_icon_size + 20 ) . 'px';
+		}
+	} else {
+		$style .= 'padding: 0;';
+	}
+		$style .= '}';
+	$style     .= '}';
 }

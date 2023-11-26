@@ -1,4 +1,10 @@
-<?php
+<?php // phpcs:ignore WordPress.Files.FileName.InvalidClassFileName
+/**
+ * Hustle_Sendy_Form_Settings class
+ *
+ * @package Hustle
+ */
+
 if ( ! class_exists( 'Hustle_Sendy_Form_Settings' ) ) :
 
 	/**
@@ -23,7 +29,7 @@ if ( ! class_exists( 'Hustle_Sendy_Form_Settings' ) ) :
 		 */
 		public function form_settings_wizards() {
 			// already filtered on Abstract
-			// numerical array steps
+			// numerical array steps.
 			return array(
 				// 0
 				array(
@@ -39,12 +45,13 @@ if ( ! class_exists( 'Hustle_Sendy_Form_Settings' ) ) :
 		 * @since 3.0.5
 		 * @since 4.0 param $validate removed.
 		 *
-		 * @param array $submitted_data
+		 * @param array $submitted_data Submitted data.
 		 * @return array
 		 */
 		public function first_step_callback( $submitted_data ) {
 
-			$message   = sprintf( esc_html__( "Sendy is activated for this module.%1\$sRemember:%2\$s if you add new fields or change the default fields' names from the Hustle form, you must add them in your Sendy dashboard as well for them to be added.", 'hustle' ), '<br/><b>', '</b>' );
+			/* translators: 1. openning 'b' tag 2. closing 'b' tag 3. Plugin name */
+			$message   = sprintf( esc_html__( "Sendy is activated for this module.%1\$sRemember:%2\$s if you add new fields or change the default fields' names from the %3\$s form, you must add them in your Sendy dashboard as well for them to be added.", 'hustle' ), '<br/><b>', '</b>', esc_html( Opt_In_Utils::get_plugin_name() ) );
 			$step_html = Hustle_Provider_Utils::get_integration_modal_title_markup( __( 'Sendy', 'hustle' ), $message );
 
 			$buttons = array(

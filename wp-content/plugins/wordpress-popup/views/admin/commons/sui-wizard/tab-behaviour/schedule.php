@@ -11,7 +11,12 @@
 
 	<div class="sui-box-settings-col-1">
 		<span class="sui-settings-label"><?php esc_html_e( 'Schedule', 'hustle' ); ?></span>
-		<span class="sui-description"><?php printf( esc_html__( "By default, your %1\$s starts appearing as soon as it's published. However, you can schedule your %1\$s for better targeting.", 'hustle' ), esc_html( $smallcaps_singular ) ); ?></span>
+		<span class="sui-description">
+		<?php
+			/* translators: module type in smallcaps and in singular */
+			printf( esc_html__( "By default, your %1\$s starts appearing as soon as it's published. However, you can schedule your %1\$s for better targeting.", 'hustle' ), esc_html( $smallcaps_singular ) );
+		?>
+		</span>
 	</div>
 
 	<div class="sui-box-settings-col-2">

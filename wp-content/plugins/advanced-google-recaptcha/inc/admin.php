@@ -64,69 +64,29 @@ function advanced_google_recaptcha_options_page() {
 
 				<div id="postbox-container-1" class="postbox-container">
 
-					<div class="meta-box-sortables">
-						<div class="postbox">
 
-							<h3><span>Our Plugins</span></h3>
+          <div class="meta-box-sortables">
+						<div class="postbox" style="background-color: #46bb9b40;">
+
+							<h3><span>Need more protection?</span></h3>
 							<div class="inside">
-								<ul>
-									<li><a href="https://wpconcern.com/plugins/woocommerce-product-tabs/" target="_blank">WooCommerce Product Tabs</a></li>
-									<li><a href="https://wpconcern.com/plugins/nifty-coming-soon-and-under-construction-page/" target="_blank">Coming Soon &amp; Maintenance Mode Page</a></li>
-									<li><a href="https://wpconcern.com/plugins/post-grid-elementor-addon/" target="_blank">Post Grid Elementor Addon</a></li>
-									<li><a href="https://wpconcern.com/plugins/advanced-google-recaptcha/" target="_blank">Advanced Google reCAPTCHA</a></li>
-									<li><a href="https://wpconcern.com/plugins/majestic-before-after-image/" target="_blank">Majestic Before After Image</a></li>
-									<li><a href="https://wpconcern.com/plugins/admin-customizer/" target="_blank">Admin Customizer</a></li>
-									<li><a href="https://wordpress.org/plugins/prime-addons-for-elementor/" target="_blank">Prime Addons for Elementor</a></li>
-								</ul>
+								Use the free <a target="_blank" href="plugin-install.php?s=login+lockdown+webfactory&tab=search&type=term">Login Lockdown</a> plugin to record the IP address and timestamp of failed login attempts. So even if somebody solves the captcha you can still block them.
 							</div> <!-- .inside -->
 
 						</div><!-- .postbox -->
 					</div><!-- .meta-box-sortables -->
 
-
-
 					<div class="meta-box-sortables">
 						<div class="postbox">
 
-							<h3><span>Have any queries?</span></h3>
+							<h3><span>Support</span></h3>
 							<div class="inside">
-								<p>If you have any queries or feedback, please feel free to send us an email to <code>support@wpconcern.com</code></p>
+								<p>Please use the <a target="_blank" href="https://wordpress.org/support/plugin/advanced-google-recaptcha/">support forum</a>. It's the fastest way to get in touch.</p>
 							</div><!-- .inside -->
 
 						</div><!-- .postbox -->
 					</div><!-- .meta-box-sortables -->
 
-					<div class="meta-box-sortables">
-						<div class="postbox">
-
-							<h3><span>Important Links</span></h3>
-							<div class="inside">
-								<ul>
-								<li><a href="https://wpconcern.com/documentation/advanced-google-recaptcha/" target="_blank">Documentation</a></li>
-								<li><a href="https://wpconcern.com/request-customization/" target="_blank">Customization Request</a></li>
-								<li><a href="https://wordpress.org/plugins/advanced-google-recaptcha/#reviews" target="_blank">Submit a Review</a></li>
-								</ul>
-							</div> <!-- .inside -->
-
-						</div><!-- .postbox -->
-					</div><!-- .meta-box-sortables -->
-
-					<div class="meta-box-sortables">
-						<div class="postbox">
-
-							<h3><span>Our Themes</span></h3>
-							<div class="inside">
-								<ul>
-									<li><a href="https://wphait.com/themes/nari/" target="_blank">Nari - Feminine WordPress Blog Theme</a></li>
-									<li><a href="https://wphait.com/themes/dhor/" target="_blank">Dhor - Minimal WordPress Blog Theme</a></li>
-									<li><a href="https://wphait.com/themes/hello-blog/" target="_blank">Hello Blog - Elegant WordPress Blog theme</a></li>
-									<li><a href="https://wphait.com/themes/blog-up/" target="_blank">Blog Up - Clean WordPress Blog theme</a></li>
-									<li><a href="https://wphait.com/themes/hait/" target="_blank">Hait - Multipurpose WordPress Blog Theme</a></li>
-								</ul>
-							</div> <!-- .inside -->
-
-						</div><!-- .postbox -->
-					</div><!-- .meta-box-sortables -->
 
 				</div><!-- #postbox-container-1 .postbox-container -->
 

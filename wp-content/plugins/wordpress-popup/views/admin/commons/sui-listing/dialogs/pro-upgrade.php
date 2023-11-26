@@ -59,7 +59,7 @@
 					href="<?php echo esc_url( Opt_In_Utils::get_link( 'plugin', 'hustle_modal_upsell_notice' ) ); ?>"
 					class="sui-button sui-button-purple"
 				>
-					<?php esc_html_e( 'Try Pro for Free Today!', 'hustle' ); ?>
+					<?php esc_html_e( 'Upgrade to Pro', 'hustle' ); ?>
 				</a>
 
 			</div>

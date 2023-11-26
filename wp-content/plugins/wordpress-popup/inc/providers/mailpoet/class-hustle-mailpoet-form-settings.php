@@ -84,7 +84,7 @@ class Hustle_Mailpoet_Form_Settings extends Hustle_Provider_Form_Settings_Abstra
 		);
 
 		if ( ! empty( $error_message ) ) {
-			$step_html .= '<span class="sui-error-message">' . $error_message . '</span>';
+			$step_html .= '<span class="sui-error-message">' . esc_html( $error_message ) . '</span>';
 		}
 
 		$step_html .= $this->get_first_step_html( $current_data );
@@ -205,11 +205,12 @@ class Hustle_Mailpoet_Form_Settings extends Hustle_Provider_Form_Settings_Abstra
 
 		$step_html = Hustle_Provider_Utils::get_integration_modal_title_markup(
 			__( 'Map Fields', 'hustle' ),
-			__( 'Map your Hustle fields to Mailpoet’s List fields below. Unmapped fields will be skipped.', 'hustle' )
+			/* translators: Plugin name */
+			sprintf( __( 'Map your %s fields to Mailpoet’s List fields below. Unmapped fields will be skipped.', 'hustle' ), Opt_In_Utils::get_plugin_name() )
 		);
 
 		if ( ! empty( $error_message ) ) {
-			$step_html .= '<span class="sui-error-message">' . $error_message . '</span>';
+			$step_html .= '<span class="sui-error-message">' . esc_html( $error_message ) . '</span>';
 		}
 
 		$step_html .= $this->get_map_fields_step_html();
@@ -304,7 +305,7 @@ class Hustle_Mailpoet_Form_Settings extends Hustle_Provider_Form_Settings_Abstra
 		$html  = '<table class="sui-table">';
 		$html .= '<thead><tr>
 			<th>' . esc_html__( 'Provider Field', 'hustle' ) . '</th>
-			<th>' . esc_html__( 'Hustle Field', 'hustle' ) . '</th>
+			<th>' . /* translators: Plugin name */ esc_html( sprintf( __( '%s Field', 'hustle' ), Opt_In_Utils::get_plugin_name() ) ) . '</th>
 		</tr></thead>';
 		$html .= '<tbody>';
 

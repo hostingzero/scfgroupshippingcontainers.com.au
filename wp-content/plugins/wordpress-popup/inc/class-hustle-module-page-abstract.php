@@ -137,16 +137,6 @@ abstract class Hustle_Module_Page_Abstract extends Hustle_Admin_Page_Abstract {
 	}
 
 	/**
-	 * Method called when the action 'load-' . $this->page_slug runs.
-	 * That is, Listing page only.
-	 *
-	 * @since 4.2.0
-	 */
-	public function current_page_loaded() {
-		parent::current_page_loaded();
-	}
-
-	/**
 	 * Actions to run on listing pages only
 	 *
 	 * @since 4.2.0
@@ -266,6 +256,8 @@ abstract class Hustle_Module_Page_Abstract extends Hustle_Admin_Page_Abstract {
 
 		wp_enqueue_script( 'jquery-ui-sortable' );
 
+		wp_enqueue_script( 'fast_wistia', '//fast.wistia.com/assets/external/E-v1.js', array(), '1', true );
+
 		self::add_color_picker();
 	}
 
@@ -297,14 +289,6 @@ abstract class Hustle_Module_Page_Abstract extends Hustle_Admin_Page_Abstract {
 		wp_enqueue_script( 'thickbox' );
 		wp_enqueue_media();
 		wp_enqueue_script( 'media-upload' );
-
-//		wp_enqueue_script(
-//			'optin_admin_ace',
-//			Opt_In::$plugin_url . 'assets/js/vendor/ace/ace.js',
-//			array(),
-//			Opt_In::VERSION,
-//			true
-//		);
 
 		Opt_In_Utils::maybe_add_scripts_for_ie();
 
@@ -378,12 +362,12 @@ abstract class Hustle_Module_Page_Abstract extends Hustle_Admin_Page_Abstract {
 
 			foreach ( $saved_fields as $field_name => $data ) {
 				if ( ! in_array( $data['type'], $ignored_fields, true ) ) {
-					$fields[ $field_name ] = $data['label'];
+					$fields[ $field_name ] = esc_html( $data['label'] );
 				}
 			}
 
 			// Add Unsubscribe Link.
-			$fields['hustle_unsubscribe_link'] = __( 'Unsubscribe Link', 'hustle' );
+			$fields['hustle_unsubscribe_link'] = esc_html__( 'Unsubscribe Link', 'hustle' );
 
 			$available_editors = array( 'success_message', 'email_body' );
 
@@ -393,7 +377,8 @@ abstract class Hustle_Module_Page_Abstract extends Hustle_Admin_Page_Abstract {
 			 * @see assets/js/vendor/tiny-mce-button.js
 			 */
 			$var_button = array(
-				'button_title'      => __( 'Add Hustle Fields', 'hustle' ),
+				/* translators: Plugin name */
+				'button_title'      => sprintf( __( 'Add %s Fields', 'hustle' ), Opt_In_Utils::get_plugin_name() ),
 				'fields'            => $fields,
 				'available_editors' => $available_editors,
 			);
@@ -448,7 +433,7 @@ abstract class Hustle_Module_Page_Abstract extends Hustle_Admin_Page_Abstract {
 		);
 
 		// Don't use filter_input() here, because of see Hustle_Module_Admin::maybe_remove_paged function.
-		$paged = ! empty( $_GET['paged'] ) ? (int) $_GET['paged'] : 1; // phpcs:ignore
+		$paged = ! empty( $_GET['paged'] ) ? (int) $_GET['paged'] : 1; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
 		$args = array(
 			'module_type' => $this->module_type,
@@ -479,10 +464,10 @@ abstract class Hustle_Module_Page_Abstract extends Hustle_Admin_Page_Abstract {
 			'total'            => $this->get_total_count_modules_current_type(),
 			'active'           => $active_modules,
 			'modules'          => $modules,
-			'is_free'          => Opt_In_Utils::_is_free(),
+			'is_free'          => Opt_In_Utils::is_free(),
 			'capability'       => $capability,
 			'entries_per_page' => $entries_per_page,
-			'message'          => filter_input( INPUT_GET, 'message' ),
+			'message'          => filter_input( INPUT_GET, 'message', FILTER_SANITIZE_SPECIAL_CHARS ),
 			'sui'              => $this->get_sui_summary_config( 'sui-summary-sm' ),
 		);
 	}
@@ -578,10 +563,9 @@ abstract class Hustle_Module_Page_Abstract extends Hustle_Admin_Page_Abstract {
 			$type_lowercase   = Opt_In_Utils::get_module_type_display_name( $this->module_type );
 
 			$messages = array(
-				'module_error'        => __( "Couldn't save your module settings because there were some errors on {page} tab(s). Please fix those errors and try again.", 'hustle' ),
-				'module_error_reload' => __( 'Something went wrong. Please reload this page and try saving again', 'hustle' ),
-				/* translators: 1. module type capitalized, 2. module type in lowercase */
-				'module_created'      => sprintf( __( '%1$s created successfully. Get started by adding content to your new %2$s below.', 'hustle' ), $type_capitalized, $type_lowercase ), // only when 'is_new'.
+				'module_error'        => esc_html__( "Couldn't save your module settings because there were some errors on {page} tab(s). Please fix those errors and try again.", 'hustle' ),
+				'module_error_reload' => esc_html__( 'Something went wrong. Please reload this page and try saving again', 'hustle' ),
+				'module_created'      => /* translators: 1. module type capitalized, 2. module type in lowercase */ sprintf( esc_html__( '%1$s created successfully. Get started by adding content to your new %2$s below.', 'hustle' ), $type_capitalized, $type_lowercase ), // only when 'is_new'.
 			);
 
 			$current_array['single_module_action_nonce'] = wp_create_nonce( 'hustle_single_action' );
@@ -597,10 +581,11 @@ abstract class Hustle_Module_Page_Abstract extends Hustle_Admin_Page_Abstract {
 			);
 
 			$current_array['labels'] = array(
-				/* translators: number of conversions */
-				'submissions' => Hustle_Module_Model::SOCIAL_SHARING_MODULE !== $this->module_type ? __( '%d Conversions', 'hustle' ) : __( '%d Shares', 'hustle' ),
+				'submissions' => Hustle_Module_Model::SOCIAL_SHARING_MODULE !== $this->module_type
+					? /* translators: number of conversions */ esc_html__( '%d Conversions', 'hustle' )
+					: /* translators: number of shares */ esc_html__( '%d Shares', 'hustle' ),
 				/* translators: number of views */
-				'views'       => __( '%d Views', 'hustle' ),
+				'views'       => esc_html__( '%d Views', 'hustle' ),
 			);
 
 			// Also defined in dashboard.
@@ -623,6 +608,7 @@ abstract class Hustle_Module_Page_Abstract extends Hustle_Admin_Page_Abstract {
 				'module_imported'       => esc_html__( 'Module successfully imported.', 'hustle' ),
 				'module_duplicated'     => esc_html__( 'Module successfully duplicated.', 'hustle' ),
 				'module_tracking_reset' => esc_html__( "Module's tracking data successfully reset.", 'hustle' ),
+				'module_purge_emails'   => esc_html__( "Module's Email List successfully purged.", 'hustle' ),
 				'module-not-found'      => $module_not_found_message,
 			);
 
@@ -755,7 +741,7 @@ abstract class Hustle_Module_Page_Abstract extends Hustle_Admin_Page_Abstract {
 				continue;
 			}
 
-			$cpt_ids = $this->get_conditions_ids( $settings, $cpt->label );
+			$cpt_ids = $this->get_conditions_ids( $settings, $cpt->name );
 
 			$cpt_array['name']  = $cpt->name;
 			$cpt_array['label'] = $cpt->label;
@@ -769,7 +755,7 @@ abstract class Hustle_Module_Page_Abstract extends Hustle_Admin_Page_Abstract {
 		$vars['wc_tags']    = $wc_tags;
 		$vars['tags']       = $tags;
 		$vars['posts']      = $posts;
-		$vars['post_types'] = Opt_In_Utils::get_post_types();
+		$vars['post_types'] = $post_types;
 		$vars['pages']      = $pages;
 
 		$vars['countries'] = Opt_In_Utils::get_countries();
@@ -786,7 +772,7 @@ abstract class Hustle_Module_Page_Abstract extends Hustle_Admin_Page_Abstract {
 			'from_specific_ref'           => __( 'Referrer', 'hustle' ),
 			'from_search_engine'          => __( 'Source of Arrival', 'hustle' ),
 			'on_specific_url'             => __( 'Specific URL', 'hustle' ),
-			'on_specific_browser'         => __( 'Visitor\'s Browser', 'hustle' ),
+			'on_specific_browser'         => __( "Visitor's Browser", 'hustle' ),
 			'visitor_has_never_commented' => __( 'Visitor Commented Before', 'hustle' ),
 			'not_in_a_country'            => __( "Visitor's Country", 'hustle' ),
 			'on_specific_roles'           => __( 'User Roles', 'hustle' ),
@@ -856,6 +842,13 @@ abstract class Hustle_Module_Page_Abstract extends Hustle_Admin_Page_Abstract {
 			'is_shop'             => __( 'Shop', 'hustle' ),
 			'is_product_category' => __( 'Product Category', 'hustle' ),
 			'is_product_tag'      => __( 'Product Tag', 'hustle' ),
+		);
+
+		$vars['less_than_expiration'] = array(
+			1   => __( 'Day', 'hustle' ),
+			7   => __( 'Week', 'hustle' ),
+			30  => __( 'Month', 'hustle' ),
+			365 => __( 'Year', 'hustle' ),
 		);
 
 		$vars['wp_cookie_set'] = array(
@@ -932,21 +925,23 @@ abstract class Hustle_Module_Page_Abstract extends Hustle_Admin_Page_Abstract {
 	 * @return array
 	 */
 	private function get_defaults_settings() {
+		$defaults  = $this->module->get_design()->get_border_spacing_shadow_defaults( 'desktop' );
+		$defaults += $this->module->get_design()->get_typography_defaults( 'desktop' );
+		$defaults += $this->module->get_design()->get_border_spacing_shadow_defaults( 'mobile' );
+		$defaults += $this->module->get_design()->get_typography_defaults( 'mobile' );
+
 		$design_settings = $this->module->get_design()->to_array();
 		if ( ! empty( $design_settings['base_template'] ) ) {
 			// Return template settings if the module was created based on one.
 			$templates_helper  = new Hustle_Templates_Helper();
 			$template_settings = $templates_helper->get_template( $design_settings['base_template'], $this->module->module_mode );
-			$defaults          = ! empty( $template_settings['design'] ) ? $template_settings['design'] : array();
-
-			$defaults['base_template'] = $design_settings['base_template'];
+			if ( ! empty( $template_settings['design'] ) ) {
+				$defaults = array_merge( $defaults, $template_settings['design'] );
+			}
 		}
 
-		if ( empty( $defaults ) ) {
-			$defaults  = $this->module->get_design()->get_border_spacing_shadow_defaults( 'desktop' );
-			$defaults += $this->module->get_design()->get_typography_defaults( 'desktop' );
-			$defaults += $this->module->get_design()->get_border_spacing_shadow_defaults( 'mobile' );
-			$defaults += $this->module->get_design()->get_typography_defaults( 'mobile' );
+		if ( ! empty( $design_settings['base_template'] ) ) {
+			$defaults['base_template'] = $design_settings['base_template'];
 		}
 
 		return $defaults;
@@ -1112,7 +1107,7 @@ abstract class Hustle_Module_Page_Abstract extends Hustle_Admin_Page_Abstract {
 		<main class="<?php echo esc_attr( $main_class ); ?>">
 
 			<?php
-			$renderer      = $this->get_renderer();
+			$renderer = $this->get_renderer();
 			$renderer->render( $this->page_edit_template_path, $template_args );
 			?>
 
@@ -1258,16 +1253,16 @@ abstract class Hustle_Module_Page_Abstract extends Hustle_Admin_Page_Abstract {
 	 */
 	private static function get_charts_data( $sub_types, $views, Hustle_Model $module ) {
 
-		$sql_month_start_date = date( 'Y-m-d H:i:s', strtotime( '-30 days midnight' ) );
+		$sql_month_start_date = date( 'Y-m-d H:i:s', strtotime( '-30 days midnight' ) );// phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date
 		$tracking_model       = Hustle_Tracking_Model::get_instance();
 		$days_array           = array();
 		$default_array        = array();
 
 		for ( $h = 30; $h >= 0; $h-- ) {
 			$time                   = strtotime( '-' . $h . ' days' );
-			$date                   = date( 'Y-m-d', $time );
+			$date                   = date( 'Y-m-d', $time );// phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date
 			$default_array[ $date ] = 0;
-			$days_array[]           = date( 'M j, Y', $time );
+			$days_array[]           = date( 'M j, Y', $time );// phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date
 		}
 
 		$sub_types[]      = 'overall';
@@ -1275,6 +1270,7 @@ abstract class Hustle_Module_Page_Abstract extends Hustle_Admin_Page_Abstract {
 
 		if ( Hustle_Module_Model::SOCIAL_SHARING_MODULE !== $module->module_type ) {
 			$conversion_types[] = 'cta';
+			$conversion_types[] = 'cta_2';
 
 			if ( Hustle_Module_Model::OPTIN_MODE === $module->module_mode ) {
 				$conversion_types[] = 'optin';

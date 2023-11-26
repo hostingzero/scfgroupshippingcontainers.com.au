@@ -1,4 +1,9 @@
-<?php
+<?php // phpcs:ignore WordPress.Files.FileName.InvalidClassFileName
+/**
+ * Hustle_GHBlock_Embeds class
+ *
+ * @package Hustle
+ */
 
 /**
  * Class Hustle_GHBlock_Embeds
@@ -14,7 +19,7 @@ class Hustle_GHBlock_Embeds extends Hustle_GHBlock_Abstract {
 	 *
 	 * @var string
 	 */
-	protected $_slug = 'embedded';
+	protected $slug = 'embedded';
 
 	/**
 	 * Hustle_GHBlock_Embeds constructor.
@@ -22,7 +27,7 @@ class Hustle_GHBlock_Embeds extends Hustle_GHBlock_Abstract {
 	 * @since 1.0 Gutenberg Addon
 	 */
 	public function __construct() {
-		// Initialize block
+		// Initialize block.
 		$this->init();
 	}
 
@@ -30,15 +35,15 @@ class Hustle_GHBlock_Embeds extends Hustle_GHBlock_Abstract {
 	 * Render block markup on front-end
 	 *
 	 * @since 1.0 Gutenberg Addon
-	 * @param array $properties Block properties
+	 * @param array $properties Block properties.
 	 *
 	 * @return string
 	 */
 	public function render_block( $properties = array() ) {
 		$css_class = isset( $properties['css_class'] ) ? $properties['css_class'] : '';
 
-		if ( isset( $properties['module_id'] ) ) {
-			return '[wd_hustle id="' . $properties['module_id'] . '" type="embedded" css_class="' . $css_class . '"/]';
+		if ( isset( $properties['id'] ) ) {
+			return '[wd_hustle id="' . esc_attr( $properties['id'] ) . '" type="embedded" css_class="' . esc_attr( $css_class ) . '"/]';
 		}
 	}
 
@@ -52,12 +57,13 @@ class Hustle_GHBlock_Embeds extends Hustle_GHBlock_Abstract {
 
 		Hustle_Module_Front::add_hui_scripts();
 
-		// Scripts
+		// Scripts.
 		wp_enqueue_script(
 			'hustle-block-embeds',
 			Hustle_Gutenberg::get_plugin_url() . '/js/embeds-block.min.js',
 			array( 'wp-blocks', 'wp-i18n', 'wp-element', 'hui_scripts' ),
-			filemtime( Hustle_Gutenberg::get_plugin_dir() . '/js/embeds-block.min.js' )
+			filemtime( Hustle_Gutenberg::get_plugin_dir() . '/js/embeds-block.min.js' ),
+			true
 		);
 
 		// Localize scripts.
@@ -105,11 +111,21 @@ class Hustle_GHBlock_Embeds extends Hustle_GHBlock_Abstract {
 		);
 	}
 
+	/**
+	 * Get modules
+	 *
+	 * @return array
+	 */
 	public function get_modules() {
 		$module_list = $this->get_modules_by_type( 'embedded' );
 		return $module_list;
 	}
 
+	/**
+	 * Get texts for localize
+	 *
+	 * @return array
+	 */
 	private function localize() {
 		return array(
 			'name'                   => esc_html__( 'Name', 'hustle' ),
@@ -119,7 +135,8 @@ class Hustle_GHBlock_Embeds extends Hustle_GHBlock_Abstract {
 			'customize_module'       => esc_html__( 'Customize embed', 'hustle' ),
 			'rendering'              => esc_html__( 'Rendering...', 'hustle' ),
 			'block_name'             => esc_html__( 'Embeds', 'hustle' ),
-			'block_description'      => esc_html__( 'Display your Hustle Embed module in this block.', 'hustle' ),
+			/* translators: Plugin name */
+			'block_description'      => esc_html( sprintf( __( 'Display your %s Embed module in this block.', 'hustle' ), Opt_In_Utils::get_plugin_name() ) ),
 		);
 	}
 
@@ -149,6 +166,12 @@ class Hustle_GHBlock_Embeds extends Hustle_GHBlock_Abstract {
 		}
 	}
 
+	/**
+	 * Is module included
+	 *
+	 * @param Hustle_Model $module Module.
+	 * @return bool
+	 */
 	protected function is_module_included( Hustle_Model $module ) {
 		return $module->is_display_type_active( Hustle_Module_Model::SHORTCODE_MODULE );
 	}

@@ -73,7 +73,7 @@ class EVF_Admin_Assets {
 
 		// Register scripts.
 		wp_register_script( 'everest-forms-admin', evf()->plugin_url() . '/assets/js/admin/admin' . $suffix . '.js', array( 'jquery', 'jquery-blockui', 'jquery-ui-sortable', 'jquery-ui-widget', 'jquery-ui-core', 'tooltipster', 'wp-color-picker', 'perfect-scrollbar' ), EVF_VERSION, true );
-		wp_register_script( 'everest-forms-extensions', evf()->plugin_url() . '/assets/js/admin/extensions' . $suffix . '.js', array( 'jquery', 'updates' ), EVF_VERSION, true );
+		wp_register_script( 'everest-forms-extensions', evf()->plugin_url() . '/assets/js/admin/extensions' . $suffix . '.js', array( 'jquery', 'updates', 'wp-i18n' ), EVF_VERSION, true );
 		wp_register_script( 'everest-forms-email-admin', evf()->plugin_url() . '/assets/js/admin/evf-admin-email' . $suffix . '.js', array( 'jquery', 'jquery-blockui', 'jquery-ui-sortable', 'jquery-ui-widget', 'jquery-ui-core', 'tooltipster', 'wp-color-picker', 'perfect-scrollbar' ), EVF_VERSION, true );
 		wp_register_script( 'everest-forms-editor', evf()->plugin_url() . '/assets/js/admin/editor' . $suffix . '.js', array( 'jquery' ), EVF_VERSION, true );
 		wp_register_script( 'jquery-blockui', evf()->plugin_url() . '/assets/js/jquery-blockui/jquery.blockUI' . $suffix . '.js', array( 'jquery' ), '2.70', true );
@@ -98,7 +98,7 @@ class EVF_Admin_Assets {
 			'evf-template-controller',
 			'evf_templates',
 			array(
-				'evf_template_all' => EVF_Admin_Forms::get_template_data(),
+				'evf_template_all' => EVF_Admin_Form_Templates::get_template_data(),
 				'i18n_get_started' => esc_html__( 'Get Started', 'everest-forms' ),
 				'i18n_get_preview' => esc_html__( 'Preview', 'everest-forms' ),
 				'i18n_pro_feature' => esc_html__( 'Pro', 'everest-forms' ),
@@ -120,6 +120,8 @@ class EVF_Admin_Assets {
 				'i18n_selection_too_long_n' => _x( 'You can only select %qty% items', 'enhanced select', 'everest-forms' ),
 				'i18n_load_more'            => _x( 'Loading more results&hellip;', 'enhanced select', 'everest-forms' ),
 				'i18n_searching'            => _x( 'Searching&hellip;', 'enhanced select', 'everest-forms' ),
+				'i18n_select_all'           => _x( 'Select All', 'enhanced select', 'everest-forms' ),
+				'i18n_unselect_all'         => _x( 'Unselect All', 'enhanced select', 'everest-forms' ),
 			)
 		);
 		wp_register_script( 'evf-form-builder', evf()->plugin_url() . '/assets/js/admin/form-builder' . $suffix . '.js', array( 'jquery', 'jquery-blockui', 'tooltipster', 'jquery-ui-sortable', 'jquery-ui-widget', 'jquery-ui-core', 'jquery-ui-tabs', 'jquery-ui-draggable', 'jquery-ui-droppable', 'jquery-ui-datepicker', 'jquery-confirm', 'evf-clipboard', 'flatpickr' ), EVF_VERSION, true );
@@ -174,6 +176,7 @@ class EVF_Admin_Assets {
 					'email_fields'                 => evf_get_all_email_fields_by_form_id( isset( $_GET['form_id'] ) ? absint( $_GET['form_id'] ) : 0 ), // phpcs:ignore WordPress.Security.NonceVerification
 					'all_fields'                   => evf_get_all_form_fields_by_form_id( isset( $_GET['form_id'] ) ? absint( $_GET['form_id'] ) : 0 ), // phpcs:ignore WordPress.Security.NonceVerification
 					'smart_tags_other'             => evf()->smart_tags->other_smart_tags(),
+					'regex_expression_lists'       => evf()->smart_tags->regex_expression_lists(),
 					'entries_url'                  => ! empty( $_GET['form_id'] ) ? esc_url( admin_url( 'admin.php?page=evf-entries&amp;form_id=' . absint( $_GET['form_id'] ) ) ) : '', // phpcs:ignore WordPress.Security.NonceVerification
 					'preview_url'                  => ! empty( $_GET['form_id'] ) ? esc_url( // phpcs:ignore WordPress.Security.NonceVerification
 						add_query_arg(
@@ -194,12 +197,20 @@ class EVF_Admin_Assets {
 			'evf-upgrade',
 			'evf_upgrade',
 			array(
-				'upgrade_title'         => esc_html__( 'is a PRO Feature', 'everest-forms' ),
-				'upgrade_message'       => esc_html__( 'We\'re sorry, the %name% is not available on your plan.<br>Please upgrade to the PRO plan to unlock all these awesome features.', 'everest-forms' ),
-				'upgrade_button'        => esc_html__( 'Upgrade to PRO', 'everest-forms' ),
-				'upgrade_url'           => apply_filters( 'everest_forms_upgrade_url', 'https://wpeverest.com/wordpress-plugins/everest-forms/pricing/?utm_source=premium-fields&utm_medium=modal-button&utm_campaign=evf-upgrade-to-pro' ),
-				'enable_stripe_title'   => esc_html__( 'Please enable Stripe', 'everest-forms' ),
-				'enable_stripe_message' => esc_html__( 'Enable Stripe Payment gateway in payments section to use this field.', 'everest-forms' ),
+				'ajax_url'                     => admin_url( 'admin-ajax.php' ),
+				'upgrade_title'                => esc_html__( 'is a PRO Feature', 'everest-forms' ),
+				'upgrade_message'              => esc_html__( 'We\'re sorry, the %name% is not available on your plan.<br>Please upgrade to the PRO plan to unlock all these awesome features.', 'everest-forms' ),
+				'upgrade_button'               => esc_html__( 'Upgrade to PRO', 'everest-forms' ),
+				'upgrade_url'                  => apply_filters( 'everest_forms_upgrade_url', 'https://wpeverest.com/wordpress-plugins/everest-forms/pricing/?utm_source=premium-fields&utm_medium=modal-button&utm_campaign=evf-upgrade-to-pro' ),
+				'enable_stripe_title'          => esc_html__( 'Please enable Stripe', 'everest-forms' ),
+				'enable_stripe_message'        => esc_html__( 'Enable Stripe Payment gateway in payments section to use this field.', 'everest-forms' ),
+				'enable_authorize_net_title'   => esc_html__( 'Please enable Authorize.Net', 'everest-forms' ),
+				'enable_authorize_net_message' => esc_html__( 'Enable Authorize.Net Payment gateway in payments section to use this field.', 'everest-forms' ),
+				'evf_install_and_active_nonce' => wp_create_nonce( 'install_and_active_nonce' ),
+				'upgrade_plan_title'           => esc_html__( 'is a Premium Addon', 'everest-forms' ),
+				'upgrade_plan_message'         => esc_html__( 'This addon requires premium plan. Please upgrade to the Premium plan to unlock all these awesome field.', 'everest-forms' ),
+				'upgrade_plan_button'          => esc_html__( 'Upgrade Plan', 'everest-forms' ),
+
 			)
 		);
 
@@ -242,6 +253,17 @@ class EVF_Admin_Assets {
 					'i18n_form_export_action_error' => esc_html__( 'Please select a form which you want to export.', 'everest-forms' ),
 				)
 			);
+
+			wp_localize_script(
+				'everest-forms-admin',
+				'everest_forms_admin_locate',
+				array(
+					'ajax_locate_nonce' => wp_create_nonce( 'process-locate-ajax-nonce' ),
+					'ajax_url'          => admin_url( 'admin-ajax.php', 'relative' ),
+					'form_found_error'  => esc_html__( 'Form not found in content', 'everest-forms' ),
+					'form_found'        => esc_html__( 'Form found in page:', 'everest-forms' ),
+				)
+			);
 		}
 
 		// EverestForms builder pages.
@@ -250,11 +272,14 @@ class EVF_Admin_Assets {
 			wp_enqueue_script( 'evf-upgrade' );
 			wp_enqueue_script( 'evf-form-builder' );
 
+			wp_enqueue_script( 'wp-codemirror' );
+			wp_enqueue_style( 'wp-codemirror' );
+
 			// De-register scripts.
 			wp_dequeue_script( 'colorpick' );
 
 			// EverestForms builder setup page.
-			if ( isset( $_GET['create-form'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			if ( isset( $_GET['create-form'] ) || isset( $_GET['form_id'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 				wp_register_script( 'evf-setup', evf()->plugin_url() . '/assets/js/admin/evf-setup' . $suffix . '.js', array( 'jquery', 'everest-forms-extensions', 'evf-template-controller' ), EVF_VERSION, true );
 				wp_enqueue_script( 'evf-setup' );
 				wp_localize_script(
@@ -263,6 +288,7 @@ class EVF_Admin_Assets {
 					array(
 						'ajax_url'                     => admin_url( 'admin-ajax.php' ),
 						'create_form_nonce'            => wp_create_nonce( 'everest_forms_create_form' ),
+						'evf_active_nonce'             => wp_create_nonce( 'evf_active_nonce' ),
 						'template_licence_check_nonce' => wp_create_nonce( 'everest_forms_template_licence_check' ),
 						'i18n_form_name'               => esc_html__( 'Give it a name.', 'everest-forms' ),
 						'i18n_form_error_name'         => esc_html__( 'You must provide a Form name', 'everest-forms' ),
@@ -273,6 +299,18 @@ class EVF_Admin_Assets {
 						'i18n_form_ok'                 => esc_html__( 'Continue', 'everest-forms' ),
 						'i18n_form_placeholder'        => esc_html__( 'Untitled Form', 'everest-forms' ),
 						'i18n_form_title'              => esc_html__( 'Uplift your form experience to the next level.', 'everest-forms' ),
+						'i18n_installing'              => esc_html__( 'installing', 'everest-forms' ),
+						'save_changes_text'            => esc_html__( 'Save and Reload', 'everest-forms' ),
+						'reload_text'                  => esc_html__( 'Just Reload', 'everest-forms' ),
+						'active_confirmation_title'    => esc_html__( 'Activation Successful.', 'everest-forms' ),
+						'install_confirmation_title'   => esc_html__( 'Installation Successful.', 'everest-forms' ),
+						'install_confirmation_message' => esc_html__( 'Addons have been installed and Activated. You have to reload the page', 'everest-forms' ),
+						'active_confirmation_message'  => esc_html__( 'Addons have been Activated. You have to reload the page', 'everest-forms' ),
+						'download_failed'              => esc_html__( 'Download Failed', 'everest-forms' ),
+						'installing_title'             => esc_html__( 'Installing...', 'everest-forms' ),
+						'activate_title'               => esc_html__( 'Activating...', 'everest-forms' ),
+						'installing_message'           => esc_html__( 'Please wait while the addon is being installed.', 'everest-forms' ),
+						'activate_message'             => esc_html__( 'Please wait while the addon is being activated.', 'everest-forms' ),
 					)
 				);
 			}
@@ -295,20 +333,6 @@ class EVF_Admin_Assets {
 		// Add-ons/extensions page.
 		if ( 'everest-forms_page_evf-addons' === $screen_id ) {
 			wp_enqueue_script( 'everest-forms-extensions' );
-		}
-
-		// Plugins page.
-		if ( in_array( $screen_id, array( 'plugins' ), true ) ) {
-			wp_register_script( 'evf-plugins', evf()->plugin_url() . '/assets/js/admin/plugins' . $suffix . '.js', array( 'jquery' ), EVF_VERSION, true );
-			wp_enqueue_script( 'evf-plugins' );
-			wp_localize_script(
-				'evf-plugins',
-				'evf_plugins_params',
-				array(
-					'ajax_url'           => admin_url( 'admin-ajax.php' ),
-					'deactivation_nonce' => wp_create_nonce( 'deactivation-notice' ),
-				)
-			);
 		}
 	}
 }

@@ -29,6 +29,7 @@ class EVF_Field_First_Name extends EVF_Form_Fields {
 					'meta',
 					'description',
 					'required',
+					'required_field_message_setting',
 					'required_field_message',
 				),
 			),
@@ -38,6 +39,9 @@ class EVF_Field_First_Name extends EVF_Form_Fields {
 					'label_hide',
 					'default_value',
 					'css',
+					'regex_validation',
+					'regex_value',
+					'regex_message',
 				),
 			),
 		);

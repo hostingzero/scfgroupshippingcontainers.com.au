@@ -6,8 +6,6 @@
  * @since 4.3.0
  */
 
-// phpcs:disable Generic.WhiteSpace.ScopeIndent.Incorrect
-
 // SETTINGS: Padding.
 $padding_top    = ( '' !== $advanced['popup_cont_padding_top'] ) ? $advanced['popup_cont_padding_top'] . $advanced['popup_cont_padding_unit'] : '0';
 $padding_right  = ( '' !== $advanced['popup_cont_padding_right'] ) ? $advanced['popup_cont_padding_right'] . $advanced['popup_cont_padding_unit'] : '0';
@@ -90,6 +88,40 @@ if ( $is_slidein && ! $is_vanilla ) {
 				$style .= '-moz-box-shadow: ' . $box_shadow . ';';
 				$style .= '-webkit-box-shadow: ' . $box_shadow . ';';
 				$style .= 'box-shadow: ' . $box_shadow . ';';
+			$style     .= '}';
+		$style         .= '}';
+	}
+}
+
+// Check if is embed.
+if ( $is_embed && ! $is_vanilla ) {
+
+	// SETTINGS: Margin.
+	$margin_top    = ( '' !== $advanced['embed_cont_margin_top'] ) ? $advanced['embed_cont_margin_top'] . $advanced['embed_cont_margin_unit'] : '0';
+	$margin_right  = ( '' !== $advanced['embed_cont_margin_right'] ) ? $advanced['embed_cont_margin_right'] . $advanced['embed_cont_margin_unit'] : '0';
+	$margin_bottom = ( '' !== $advanced['embed_cont_margin_bottom'] ) ? $advanced['embed_cont_margin_bottom'] . $advanced['embed_cont_margin_unit'] : '0';
+	$margin_left   = ( '' !== $advanced['embed_cont_margin_left'] ) ? $advanced['embed_cont_margin_left'] . $advanced['embed_cont_margin_unit'] : '0';
+
+	$margin = $margin_top . ' ' . $margin_right . ' ' . $margin_bottom . ' ' . $margin_left;
+
+	$mobile_margin_top    = ( '' !== $advanced['embed_cont_margin_top_mobile'] ) ? $advanced['embed_cont_margin_top_mobile'] . $advanced['embed_cont_margin_unit_mobile'] : $margin_top;
+	$mobile_margin_right  = ( '' !== $advanced['embed_cont_margin_right_mobile'] ) ? $advanced['embed_cont_margin_right_mobile'] . $advanced['embed_cont_margin_unit_mobile'] : $margin_right;
+	$mobile_margin_bottom = ( '' !== $advanced['embed_cont_margin_bottom_mobile'] ) ? $advanced['embed_cont_margin_bottom_mobile'] . $advanced['embed_cont_margin_unit_mobile'] : $margin_bottom;
+	$mobile_margin_left   = ( '' !== $advanced['embed_cont_margin_left_mobile'] ) ? $advanced['embed_cont_margin_left_mobile'] . $advanced['embed_cont_margin_unit_mobile'] : $margin_left;
+
+	$mobile_margin = $mobile_margin_top . ' ' . $mobile_margin_right . ' ' . $mobile_margin_bottom . ' ' . $mobile_margin_left;
+	$mobile_margin = ( ! $is_mobile_enabled || ( $is_mobile_enabled && $default_advanced ) ) ? $margin : $mobile_margin;
+
+
+	$style     .= trim( $prefix_mobile ) . '.hustle-inline {';
+		$style .= 'position: relative;';
+		$style .= 'margin: ' . $mobile_margin . ';';
+	$style     .= '}';
+
+	if ( $is_mobile_enabled ) {
+		$style         .= $breakpoint . ' {';
+			$style     .= trim( $prefix_desktop ) . '.hustle-inline {';
+				$style .= 'margin: ' . $margin . ';';
 			$style     .= '}';
 		$style         .= '}';
 	}

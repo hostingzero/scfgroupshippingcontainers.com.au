@@ -1,4 +1,4 @@
-<?php
+<?php // phpcs:ignore WordPress.Files.FileName.InvalidClassFileName
 /**
  * Hustle plugin.
  *
@@ -10,9 +10,11 @@
  * Plugin Name: Hustle
  * Plugin URI: https://wordpress.org/plugins/wordpress-popup/
  * Description: Start collecting email addresses and quickly grow your mailing list with big bold pop-ups, slide-ins, widgets, or in post opt-in forms.
- * Version: 7.5.0
+ * Version: 7.8.0
  * Author: WPMU DEV
  * Author URI: https://wpmudev.com
+ * Tested up to: 6.2
+ * Requires PHP: 7.4.33
  * Text Domain: hustle
  * 
  */
@@ -34,6 +36,59 @@
 // | Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,               |
 // | MA 02110-1301 USA                                                    |
 // +----------------------------------------------------------------------+
+
+if ( ! defined( 'HUSTLE_MIN_PHP_VERSION' ) ) {
+	define( 'HUSTLE_MIN_PHP_VERSION', '7.4.33' );
+}
+
+if ( ! function_exists( 'hustle_insecure_php_version_notice' ) ) {
+	/**
+	 * Display admin notice, if the site is using unsupported PHP version.
+	 */
+	function hustle_insecure_php_version_notice() {
+
+		?>
+		<div class="notice notice-error">
+			<p>
+				<?php
+				printf(
+					wp_kses( /* translators: %1$s - URL to an article about our hosting benefits. */
+						__( 'Your site is running an outdated version of PHP that is no longer supported or receiving security updates. Please update PHP to at least version %1$s at your current hosting provider in order to activate Hustle, or consider switching to <a href="%2$s" target="_blank" rel="noopener noreferrer">WPMU DEV Hosting</a>.', 'hustle' ),
+						array(
+							'a'      => array(
+								'href'   => array(),
+								'target' => array(),
+								'rel'    => array(),
+							),
+							'strong' => array(),
+						)
+					),
+					esc_html( HUSTLE_MIN_PHP_VERSION ),
+					'https://wpmudev.com/hosting/'
+				);
+				?>
+			</p>
+		</div>
+
+		<?php
+
+		// In case this is on plugin activation.
+		if ( isset( $_GET['activate'] ) ) { //phpcs:ignore
+			unset( $_GET['activate'] ); //phpcs:ignore
+		}
+	}
+}
+
+/**
+ * Display admin notice and prevent plugin code execution, if the server is
+ * using old/insecure PHP version.
+ */
+if ( version_compare( phpversion(), HUSTLE_MIN_PHP_VERSION, '<' ) ) {
+	add_action( 'admin_notices', 'hustle_insecure_php_version_notice' );
+
+	return;
+}
+
 
 add_action( 'activated_plugin', 'hustle_activated', 10, 2 );
 
@@ -71,7 +126,7 @@ if ( ! class_exists( 'ComposerAutoloaderInitda98371940d11703c56dee923bbb392f' ) 
 }
 
 if ( ! defined( 'HUSTLE_SUI_VERSION' ) ) {
-	define( 'HUSTLE_SUI_VERSION', '2.10.9' );
+	define( 'HUSTLE_SUI_VERSION', '2.12.20' );
 }
 
 if ( ! class_exists( 'Opt_In' ) ) {
@@ -81,7 +136,7 @@ if ( ! class_exists( 'Opt_In' ) ) {
 	 */
 	class Opt_In {
 
-		const VERSION = '4.5.0';
+		const VERSION = '4.8.0';
 
 		const VIEWS_FOLDER = 'views';
 

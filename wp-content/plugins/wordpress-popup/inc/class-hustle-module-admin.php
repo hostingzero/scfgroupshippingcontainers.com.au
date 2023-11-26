@@ -123,12 +123,12 @@ if ( ! class_exists( 'Hustle_Module_Admin' ) ) :
 				$admin_url    = admin_url( 'admin.php' );
 				$settings_url = add_query_arg( 'page', 'hustle_settings', $admin_url );
 				$links        = array(
-					'settings' => '<a href="' . $settings_url . '">' . esc_html__( 'Settings', 'hustle' ) . '</a>',
+					'settings' => '<a href="' . esc_url( $settings_url ) . '">' . esc_html__( 'Settings', 'hustle' ) . '</a>',
 					'docs'     => '<a href="' . esc_url( Opt_In_Utils::get_link( 'docs', 'hustle_pluginlist_docs' ) ) . '" target="_blank">' . esc_html__( 'Docs', 'hustle' ) . '</a>',
 				);
 
 				// Upgrade link.
-				if ( Opt_In_Utils::_is_free() ) {
+				if ( Opt_In_Utils::is_free() ) {
 					if ( ! Opt_In_Utils::is_hustle_included_in_membership() ) {
 						$url   = Opt_In_Utils::get_link( 'wpmudev', 'hustle_pluginlist_upgrade' );
 						$label = __( 'Upgrade to Hustle Pro', 'hustle' );
@@ -164,7 +164,7 @@ if ( ! class_exists( 'Hustle_Module_Admin' ) ) :
 			if ( Opt_In::$plugin_base_file === $plugin_file ) {
 				$row_meta = array();
 
-				if ( Opt_In_Utils::_is_free() ) {
+				if ( Opt_In_Utils::is_free() ) {
 					$row_meta['rate'] = '<a href="https://wordpress.org/support/plugin/wordpress-popup/reviews/#new-post" target="_blank">' . esc_html__( 'Rate Hustle', 'hustle' ) . '</a>';
 				}
 
@@ -239,7 +239,7 @@ if ( ! class_exists( 'Hustle_Module_Admin' ) ) :
 		 * @since 4.2.0
 		 */
 		private function maybe_add_recommended_plugins_notice() {
-			if ( ! Opt_In_Utils::_is_free() ) {
+			if ( ! Opt_In_Utils::is_free() ) {
 				return;
 			}
 
@@ -259,7 +259,7 @@ if ( ! class_exists( 'Hustle_Module_Admin' ) ) :
 		 * @return bool
 		 */
 		private function is_hustle_page() {
-			$page = filter_input( INPUT_GET, 'page' );
+			$page = filter_input( INPUT_GET, 'page', FILTER_SANITIZE_SPECIAL_CHARS );
 			return in_array( $page, Hustle_Data::get_hustle_pages(), true );
 		}
 

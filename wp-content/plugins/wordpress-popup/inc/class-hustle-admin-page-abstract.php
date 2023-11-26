@@ -86,7 +86,7 @@ if ( ! class_exists( 'Hustle_Admin_Page_Abstract' ) ) :
 		 */
 		public function __construct() {
 
-			$this->current_page = filter_input( INPUT_GET, 'page' );
+			$this->current_page = filter_input( INPUT_GET, 'page', FILTER_SANITIZE_SPECIAL_CHARS );
 
 			$this->init();
 
@@ -107,8 +107,7 @@ if ( ! class_exists( 'Hustle_Admin_Page_Abstract' ) ) :
 		 * @since 4.0.1
 		 */
 		public function register_admin_menu() {
-
-			$this->page_slug = add_submenu_page( 'hustle', $this->page_title, $this->page_menu_title, $this->page_capability, $this->page, array( $this, 'render_main_page' ) );
+			$this->page_slug = add_submenu_page( 'hustle', $this->page_title, esc_html( $this->page_menu_title ), $this->page_capability, $this->page, array( $this, 'render_main_page' ) );
 
 			add_action( 'admin_init', array( $this, 'maybe_export' ) );
 			add_action( 'load-' . $this->page_slug, array( $this, 'current_page_loaded' ) );
@@ -235,15 +234,24 @@ if ( ! class_exists( 'Hustle_Admin_Page_Abstract' ) ) :
 		 * @return array
 		 */
 		protected function get_vars_to_localize() {
-			$tutorials_removed = sprintf( /* translators: %1$s - opening <a> tag, %2$s - closing <a> tag */
-				esc_html__( 'The widget has been removed. Hustle tutorials can still be found in the %1$sTutorials tab%2$s any time.', 'hustle' ),
+			$tutorials_removed = sprintf( /* translators: %1$s - plugin name, %2$s - opening <a> tag, %3$s - closing <a> tag */
+				esc_html__( 'The widget has been removed. %1$s tutorials can still be found in the %2$sTutorials tab%3$s any time.', 'hustle' ),
+				Opt_In_Utils::get_plugin_name(),
 				'<a href=' . esc_url( menu_page_url( 'hustle_tutorials', false ) ) . '>',
 				'</a>'
 			);
 
+			$url_params = $_GET; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			array_walk_recursive(
+				$url_params,
+				function ( &$val ) {
+					$val = esc_attr( $val );
+				}
+			);
+
 			return array(
 				'dismiss_notice_nonce' => wp_create_nonce( 'hustle_dismiss_notification' ),
-				'urlParams'            => $_GET, // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+				'urlParams'            => $url_params,
 				'module_page'          => array(
 					'popup'          => Hustle_Data::POPUP_LISTING_PAGE,
 					'slidein'        => Hustle_Data::SLIDEIN_LISTING_PAGE,
@@ -251,20 +259,22 @@ if ( ! class_exists( 'Hustle_Admin_Page_Abstract' ) ) :
 					'social_sharing' => Hustle_Data::SOCIAL_SHARING_LISTING_PAGE,
 				),
 				'messages'             => array(
+					/* translators: Plugin name */
+					'hustleTutorials'             => esc_html( sprintf( __( '%s Tutorials', 'hustle' ), Opt_In_Utils::get_plugin_name() ) ),
 					'tutorialsRemoved'            => $tutorials_removed,
-					'something_went_wrong'        => __( 'Something went wrong. Please try again', 'hustle' ), // everywhere.
-					'something_went_wrong_reload' => '<label class="wpmudev-label--notice"><span>' . __( 'Something went wrong. Please reload this page and try again.', 'hustle' ) . '</span></label>', // everywhere.
+					'something_went_wrong'        => esc_html__( 'Something went wrong. Please try again', 'hustle' ), // everywhere.
+					'something_went_wrong_reload' => '<label class="wpmudev-label--notice"><span>' . esc_html__( 'Something went wrong. Please reload this page and try again.', 'hustle' ) . '</span></label>', // everywhere.
 					/* translators: "Aweber" between "strong" tags */
 					'aweber_migration_success'    => sprintf( esc_html__( '%s integration successfully migrated to the oAuth 2.0.', 'hustle' ), '<strong>' . esc_html__( 'Aweber', 'hustle' ) . '</strong>' ), // everywhere. views.js.
-					'integraiton_required'        => '<label class="wpmudev-label--notice"><span>' . __( 'An integration is required on opt-in module.', 'hustle' ) . '</span></label>', // wizard and integrations.
-					'module_deleted'              => __( 'Module successfully deleted.', 'hustle' ), // listing and dashboard.
-					'shortcode_copied'            => __( 'Shortcode copied successfully.', 'hustle' ), // listing and dashboard.
+					'integraiton_required'        => '<label class="wpmudev-label--notice"><span>' . esc_html__( 'An integration is required on opt-in module.', 'hustle' ) . '</span></label>', // wizard and integrations.
+					'module_deleted'              => esc_html__( 'Module successfully deleted.', 'hustle' ), // listing and dashboard.
+					'shortcode_copied'            => esc_html__( 'Shortcode copied successfully.', 'hustle' ), // listing and dashboard.
 					'commons'                     => array(
-						'published' => __( 'Published', 'hustle' ), // dashboard and wizard.
-						'draft'     => __( 'Draft', 'hustle' ), // dashboard and wizard.
-						'dismiss'   => __( 'Dismiss', 'hustle' ), // everywhere, views.js.
+						'published' => esc_html__( 'Published', 'hustle' ), // dashboard and wizard.
+						'draft'     => esc_html__( 'Draft', 'hustle' ), // dashboard and wizard.
+						'dismiss'   => esc_html__( 'Dismiss', 'hustle' ), // everywhere, views.js.
 					),
-					'request_error_reload_notice' => __( 'There was an issue processing your request. Please reload the page and try again.', 'hustle' ),
+					'request_error_reload_notice' => esc_html__( 'There was an issue processing your request. Please reload the page and try again.', 'hustle' ),
 				),
 			);
 		}
@@ -281,19 +291,19 @@ if ( ! class_exists( 'Hustle_Admin_Page_Abstract' ) ) :
 
 			wp_register_style(
 				'hstl-roboto',
-				'https://fonts.googleapis.com/css?family=Roboto+Condensed:300,300i,400,400i,700,700i|Roboto:300,300i,400,400i,500,500i,700,700i',
+				'https://fonts.bunny.net/css?family=Roboto+Condensed:300,300i,400,400i,700,700i|Roboto:300,300i,400,400i,500,500i,700,700i',
 				array(),
 				Opt_In::VERSION
 			);
 			wp_register_style(
 				'hstl-opensans',
-				'https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700,700i',
+				'https://fonts.bunny.net/css?family=Open+Sans:400,400i,700,700i',
 				array(),
 				Opt_In::VERSION
 			);
 			wp_register_style(
 				'hstl-source',
-				'https://fonts.googleapis.com/css?family=Source+Code+Pro',
+				'https://fonts.bunny.net/css?family=Source+Code+Pro',
 				array(),
 				Opt_In::VERSION
 			);
@@ -354,7 +364,7 @@ if ( ! class_exists( 'Hustle_Admin_Page_Abstract' ) ) :
 		 */
 		protected function export_module() {
 
-			$nonce = filter_input( INPUT_POST, '_wpnonce' );
+			$nonce = filter_input( INPUT_POST, '_wpnonce', FILTER_SANITIZE_SPECIAL_CHARS );
 			if ( ! wp_verify_nonce( $nonce, 'hustle_module_export' ) ) {
 				return;
 			}
@@ -495,7 +505,7 @@ if ( ! class_exists( 'Hustle_Admin_Page_Abstract' ) ) :
 		 * @return boolean|string
 		 */
 		protected function get_current_section( $default = false ) {
-			$section = filter_input( INPUT_GET, 'section' );
+			$section = filter_input( INPUT_GET, 'section', FILTER_SANITIZE_SPECIAL_CHARS );
 			return empty( $section ) ? $default : $section;
 		}
 
@@ -601,12 +611,12 @@ if ( ! class_exists( 'Hustle_Admin_Page_Abstract' ) ) :
 			wp_register_script( 'wp-color-picker-alpha', Opt_In::$plugin_url . 'assets/js/vendor/wp-color-picker-alpha.min.js', array( 'wp-color-picker' ), '3.0.2', true );
 
 			$color_picker_strings = array(
-				'clear'            => __( 'Clear', 'hustle' ),
-				'clearAriaLabel'   => __( 'Clear color', 'hustle' ),
-				'defaultString'    => __( 'Default', 'hustle' ),
-				'defaultAriaLabel' => __( 'Select default color', 'hustle' ),
-				'pick'             => __( 'Select Color', 'hustle' ),
-				'defaultLabel'     => __( 'Color value', 'hustle' ),
+				'clear'            => esc_html__( 'Clear', 'hustle' ),
+				'clearAriaLabel'   => esc_html__( 'Clear color', 'hustle' ),
+				'defaultString'    => esc_html__( 'Default', 'hustle' ),
+				'defaultAriaLabel' => esc_html__( 'Select default color', 'hustle' ),
+				'pick'             => esc_html__( 'Select Color', 'hustle' ),
+				'defaultLabel'     => esc_html__( 'Color value', 'hustle' ),
 			);
 			wp_localize_script( 'wp-color-picker-alpha', 'wpColorPickerL10n', $color_picker_strings );
 			wp_enqueue_script( 'wp-color-picker-alpha' );

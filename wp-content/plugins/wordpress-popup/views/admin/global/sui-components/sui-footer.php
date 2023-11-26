@@ -10,7 +10,7 @@
  * @since 4.3.0
  */
 
-$is_free = ( isset( $is_free ) && ! empty( $is_free ) ) ? $is_free : Opt_In_Utils::_is_free();
+$is_free = ( isset( $is_free ) && ! empty( $is_free ) ) ? $is_free : Opt_In_Utils::is_free();
 
 /* translators: heart icon */
 $footer_text = sprintf( __( 'Made with %s by WPMU DEV', 'hustle' ), ' <span class="sui-icon-heart" aria-hidden="true"></span>' );
@@ -25,7 +25,7 @@ if ( $is_free && ! empty( $is_large ) && ! $hide_footer ) :
 endif;
 ?>
 
-<div class="sui-footer"><?php echo $footer_text; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></div>
+<div class="sui-footer"><?php echo wp_kses_post( $footer_text ); ?></div>
 
 <?php
 if ( ! $hide_footer ) {

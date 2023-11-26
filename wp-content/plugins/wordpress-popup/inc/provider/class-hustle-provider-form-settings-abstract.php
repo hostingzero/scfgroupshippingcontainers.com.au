@@ -611,7 +611,7 @@ abstract class Hustle_Provider_Form_Settings_Abstract {
 				}
 			} else {
 				$error_message = esc_html__( 'Please select an account.', 'hustle' );
-				$step_html    .= '<span class="sui-error-message">' . $error_message . '</span>';
+				$step_html    .= '<span class="sui-error-message">' . esc_html( $error_message ) . '</span>';
 				$has_errors    = true;
 			}
 		}

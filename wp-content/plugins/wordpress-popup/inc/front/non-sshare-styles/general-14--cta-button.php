@@ -6,8 +6,6 @@
  * @since 4.3.0
  */
 
-// phpcs:disable Generic.WhiteSpace.ScopeIndent.Incorrect
-
 $component = '.hustle-layout a.hustle-button-cta';
 
 // Component States.
@@ -161,7 +159,7 @@ if ( ! $is_mobile_enabled || ( $is_mobile_enabled && $default_typography ) ) {
 
 // ==================================================
 // Check if "Call to Action" button is enabled.
-if ( '1' === $content['show_cta'] ) {
+if ( '0' !== $content['show_cta'] ) {
 
 	$style .= ' ';
 

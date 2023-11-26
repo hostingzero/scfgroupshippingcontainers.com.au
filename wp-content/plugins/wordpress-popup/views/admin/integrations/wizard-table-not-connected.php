@@ -14,7 +14,7 @@ if ( 0 === count( $providers ) ) :
 	if ( current_user_can( 'hustle_edit_integrations' ) ) {
 		$integrations_url    = add_query_arg( 'page', Hustle_Data::INTEGRATIONS_PAGE, 'admin.php' );
 		$empty_providers_msg = sprintf(
-			/* translators: 1. opening 'a' tag to the global integrations page, 2. closing 'a' tag */
+			/* translators: 1. opening 'a' tag to the global integrations page, 2. closing 'a' tag, 3. Module type name */
 			esc_html__( 'Connect to more third-party apps via %1$sIntegrations%2$s page and activate them to collect the data of this %3$s here.', 'hustle' ),
 			'<a href="' . esc_url( $integrations_url ) . '">',
 			'</a>',

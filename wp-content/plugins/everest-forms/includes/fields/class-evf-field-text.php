@@ -29,6 +29,7 @@ class EVF_Field_Text extends EVF_Form_Fields {
 					'meta',
 					'description',
 					'required',
+					'required_field_message_setting',
 					'required_field_message',
 				),
 			),
@@ -41,6 +42,9 @@ class EVF_Field_Text extends EVF_Form_Fields {
 					'default_value',
 					'css',
 					'input_mask',
+					'regex_validation',
+					'regex_value',
+					'regex_message',
 				),
 			),
 		);
@@ -307,7 +311,7 @@ class EVF_Field_Text extends EVF_Form_Fields {
 	 */
 	public function field_display( $field, $field_atts, $form_data ) {
 		// Define data.
-		$primary = $field['properties']['inputs']['primary'];
+		$primary = apply_filters( 'everest_forms_default_values', $field['properties']['inputs']['primary'] );
 
 		// Limit length.
 		if ( isset( $field['limit_enabled'] ) ) {

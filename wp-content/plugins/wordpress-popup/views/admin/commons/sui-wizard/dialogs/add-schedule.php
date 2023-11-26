@@ -582,6 +582,7 @@ $meridiem_options = array(
 							$timezone = str_replace( '_', ' ', get_option( 'timezone_string' ) );
 
 							$notice_message = sprintf(
+								/* translators: 1. Open 'strong' tag. 2. Close 'strong' tag. 3. GMT offset. 4. Timezone. 5. {{ serverCurrentTime }} placeholder */
 								esc_html__( "Your server's timezone is %1\$s(GMT %3\$s) %4\$s%2\$s and the current time on your server is %1\$s%5\$s%2\$s. ", 'hustle' ),
 								'<strong>',
 								'</strong>',

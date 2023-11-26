@@ -1,7 +1,21 @@
-<?php
+<?php // phpcs:ignore WordPress.Files.FileName.InvalidClassFileName
+/**
+ * Hustle_Module_Front
+ *
+ * @package Hustle
+ */
+
+/**
+ * Class Hustle_Module_Front
+ */
 class Hustle_Module_Front {
 
-	private $_modules = array();
+	/**
+	 * Modules
+	 *
+	 * @var array
+	 */
+	private $modules = array();
 
 	/**
 	 * Contains the queued modules types as keys, 1 as the value.
@@ -10,9 +24,19 @@ class Hustle_Module_Front {
 	 * @since 4.0.1
 	 * @var array
 	 */
-	private $_module_types_to_display = array();
-	private $_non_inline_modules      = array();
-	private $_inline_modules          = array();
+	private $module_types_to_display = array();
+	/**
+	 * Non inline modules
+	 *
+	 * @var array
+	 */
+	private $non_inline_modules = array();
+	/**
+	 * Inline modules
+	 *
+	 * @var array
+	 */
+	private $inline_modules = array();
 
 	/**
 	 * Array with data about the modules.
@@ -23,6 +47,11 @@ class Hustle_Module_Front {
 	 */
 	private $modules_data_for_scripts = array();
 
+	/**
+	 * Filter property for the_content
+	 *
+	 * @var int
+	 */
 	private static $the_content_filter_priority = 20;
 
 	const SHORTCODE = 'wd_hustle';
@@ -78,6 +107,9 @@ class Hustle_Module_Front {
 		add_action( 'post_updated', array( __CLASS__, 'maybe_unsubscribe_page' ), 10, 3 );
 	}
 
+	/**
+	 * Prepare for front
+	 */
 	private function prepare_for_front() {
 		Hustle_Provider_Autoload::initiate_providers();
 		Hustle_Provider_Autoload::load_block_editor();
@@ -101,11 +133,7 @@ class Hustle_Module_Front {
 			0
 		);
 
-		add_action(
-			'wp_footer',
-			array( $this, 'render_non_inline_modules' ),
-			-1
-		);
+		add_action( 'template_redirect', array( $this, 'render_non_inline_modules' ) );
 
 		add_filter( 'get_the_excerpt', array( $this, 'remove_the_content_filter' ), 9 );
 		add_filter( 'wp_trim_excerpt', array( $this, 'restore_the_content_filter' ) );
@@ -131,7 +159,9 @@ class Hustle_Module_Front {
 	 * @return void
 	 */
 	private function register_shortcodes_and_widget() {
-		add_action( 'widgets_init', array( $this, 'register_widget' ) );
+		if ( Hustle_Settings_Admin::global_tracking() ) {
+			add_action( 'widgets_init', array( $this, 'register_widget' ) );
+		}
 		add_shortcode( self::SHORTCODE, array( $this, 'shortcode' ) );
 
 		// Legacy custom content support.
@@ -164,17 +194,31 @@ class Hustle_Module_Front {
 		return $post_excerpt;
 	}
 
+	/**
+	 * Restore the content filter
+	 *
+	 * @param string $text Text.
+	 * @return string
+	 */
 	public function restore_the_content_filter( $text ) {
 		add_filter( 'the_content', array( $this, 'show_after_page_post_content' ), self::$the_content_filter_priority );
 
 		return $text;
 	}
 
+	/**
+	 * Register widget
+	 */
 	public function register_widget() {
 		register_widget( 'Hustle_Module_Widget' );
 		register_widget( 'Hustle_Module_Widget_Legacy' );
 	}
 
+	/**
+	 * Register scripts
+	 *
+	 * @return null
+	 */
 	public function register_scripts() {
 		global $post;
 		$unsubscribe_shortcode = false;
@@ -184,7 +228,7 @@ class Hustle_Module_Front {
 		}
 
 		// There aren't any published modules. We don't need scripts.
-		if ( ! count( $this->_modules ) && ! $unsubscribe_shortcode ) {
+		if ( ! count( $this->modules ) && ! $unsubscribe_shortcode ) {
 			return;
 		}
 
@@ -217,7 +261,7 @@ class Hustle_Module_Front {
 			true
 		);
 
-		$modules = apply_filters( 'hustle_front_modules', $this->_modules );
+		$modules = apply_filters( 'hustle_front_modules', $this->modules );
 		wp_localize_script( 'hustle_front', 'Modules', $modules );
 
 		// force set archive page slug.
@@ -226,6 +270,7 @@ class Hustle_Module_Front {
 
 		$conditional_tags = array(
 			'is_single'            => is_single(),
+			'is_singular'          => is_singular(),
 			'is_tag'               => is_tag(),
 			'is_category'          => is_category(),
 			'is_author'            => is_author(),
@@ -260,8 +305,8 @@ class Hustle_Module_Front {
 				'ajaxurl'               => admin_url( 'admin-ajax.php', is_ssl() ? 'https' : 'http' ),
 				'page_id'               => get_queried_object_id(), // Used in many places to decide whether to show the module and cookies.
 				'page_slug'             => $slug, // Used in many places to decide whether to show the module and cookies on archive pages.
-				'is_upfront'            => class_exists( 'Upfront' ) && isset( $_GET['editmode'] ) && 'true' === $_GET['editmode'], // Used.
-				'script_delay'          => apply_filters( 'hustle_lazy_load_script_delay', 3000 ), // to lazyload script for later on added elements
+				'is_upfront'            => class_exists( 'Upfront' ) && isset( $_GET['editmode'] ) && 'true' === $_GET['editmode'], // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+				'script_delay'          => apply_filters( 'hustle_lazy_load_script_delay', 3000 ), // to lazyload script for later on added elements.
 			)
 		);
 
@@ -347,6 +392,7 @@ class Hustle_Module_Front {
 	 *
 	 * @param string $language reCAPTCHA language.
 	 * @param bool   $is_preview if it's preview.
+	 * @param bool   $is_return Is return.
 	 */
 	public static function add_recaptcha_script( $language = '', $is_preview = false, $is_return = false ) {
 
@@ -359,7 +405,7 @@ class Hustle_Module_Front {
 		$script_url = 'https://www.google.com/recaptcha/api.js?render=explicit&hl=' . $language;
 
 		if ( ! $is_return ) {
-			wp_enqueue_script( 'recaptcha', $script_url, array(), false, true );
+			wp_enqueue_script( 'recaptcha', $script_url, array(), 1, true );
 
 		} elseif ( $is_preview ) {
 			return $script_url;
@@ -372,13 +418,13 @@ class Hustle_Module_Front {
 	 * @return string
 	 */
 	public function preload_custom_font() {
-		if ( ! count( $this->_modules ) ) {
+		if ( ! count( $this->modules ) ) {
 			// There aren't any published modules. We don't need to load fonts.
 			return;
 		}
 		$font_name = Opt_In::$plugin_url . 'assets/hustle-ui/fonts/hustle-icons-font';
 		?>
-			<link rel="preload" href="<?php echo esc_attr( $font_name . '.woff2' ); ?>" as="font" type="font/woff2" crossorigin>
+			<link rel="preload" href="<?php echo esc_url( $font_name . '.woff2' ); ?>" as="font" type="font/woff2" crossorigin>
 		<?php
 	}
 
@@ -388,19 +434,19 @@ class Hustle_Module_Front {
 	public function register_styles() {
 
 		// There aren't any published modules. We don't need styles.
-		if ( ! count( $this->_modules ) ) {
+		if ( ! count( $this->modules ) ) {
 			return;
 		}
 
 		$is_on_upfront_builder = class_exists( 'UpfrontThemeExporter' ) && function_exists( 'upfront_exporter_is_running' ) && upfront_exporter_is_running();
 
 		if ( ! $is_on_upfront_builder ) {
-			if ( ! $this->has_modules() || isset( $_REQUEST['fl_builder'] ) ) { // CSRF ok.
+			if ( ! $this->has_modules() || isset( $_REQUEST['fl_builder'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 				return;
 			}
 		}
 
-		$module_types_to_display = array_keys( $this->_module_types_to_display );
+		$module_types_to_display = array_keys( $this->module_types_to_display );
 
 		self::print_front_styles( $module_types_to_display, $this->modules_data_for_scripts );
 		self::print_front_fonts( $this->modules_data_for_scripts['fonts'] );
@@ -546,6 +592,8 @@ class Hustle_Module_Front {
 	 * Enqueues the required Google fonts to be included in front.
 	 *
 	 * @since unknown
+	 * @param array $fonts Fonts.
+	 * @param bool  $is_ajax Is ajax.
 	 * @return void|string
 	 */
 	public static function print_front_fonts( $fonts, $is_ajax = false ) {
@@ -565,7 +613,7 @@ class Hustle_Module_Front {
 				'family'  => implode( '|', $families_args ),
 				'display' => 'swap',
 			),
-			'https://fonts.googleapis.com/css'
+			'https://fonts.bunny.net/css'
 		);
 
 		$id = 'hustle-fonts';
@@ -573,7 +621,7 @@ class Hustle_Module_Front {
 			wp_enqueue_style( $id, $google_font_url, array(), '1.0' );
 		} else {
 			// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet
-			return '<link rel="stylesheet" id="' . $id . '" href="' . $google_font_url . '" media="all">';
+			return '<link rel="stylesheet" id="' . $id . '" href="' . esc_url( $google_font_url ) . '" media="all">';
 		}
 	}
 
@@ -683,7 +731,7 @@ class Hustle_Module_Front {
 
 				// For popups and slideins.
 				if ( $is_non_inline_module ) {
-					$this->_non_inline_modules[ $module->module_id ] = $module;
+					$this->non_inline_modules[ $module->module_id ] = $module;
 
 					if ( ! $enqueue_adblock ) {
 
@@ -695,7 +743,7 @@ class Hustle_Module_Front {
 						}
 					}
 				} elseif ( Hustle_Module_Model::EMBEDDED_MODULE === $module->module_type ) {
-					$this->_inline_modules[ $module->module_id ] = $module;
+					$this->inline_modules[ $module->module_id ] = $module;
 				}
 			} else { // Social sharing modules.
 				$ssharing_networks = $module->get_content()->get_social_icons();
@@ -706,14 +754,14 @@ class Hustle_Module_Front {
 				) {
 					$pinterest_found = true;
 				}
-				$this->_inline_modules[ $module->module_id ] = $module;
+				$this->inline_modules[ $module->module_id ] = $module;
 
-				$this->_non_inline_modules[ $module->module_id ] = $module;
+				$this->non_inline_modules[ $module->module_id ] = $module;
 			}
 
 			$this->log_module_type_to_load_styles( $module );
 
-			$this->_modules[] = $module->get_module_data_to_display();
+			$this->modules[] = $module->get_module_data_to_display();
 
 		} // End looping through the modules.
 
@@ -758,11 +806,11 @@ class Hustle_Module_Front {
 
 		// Keep track of the of the modules types and modes to display
 		// in order to queue the required styles only.
-		$this->_module_types_to_display[ $module->module_type ] = 1;
+		$this->module_types_to_display[ $module->module_type ] = 1;
 
 		// Register the module mode for non SSharing modules.
 		if ( Hustle_Module_Model::SOCIAL_SHARING_MODULE !== $module->module_type ) {
-			$this->_module_types_to_display[ $module->module_mode ] = 1;
+			$this->module_types_to_display[ $module->module_mode ] = 1;
 
 		} else { // Register the module display type for SSharing modules.
 
@@ -771,7 +819,7 @@ class Hustle_Module_Front {
 				$module->is_display_type_active( Hustle_SShare_Model::FLOAT_MOBILE ) ||
 				$module->is_display_type_active( Hustle_SShare_Model::FLOAT_DESKTOP )
 			) {
-				$this->_module_types_to_display[ Hustle_SShare_Model::FLOAT_MODULE ] = 1;
+				$this->module_types_to_display[ Hustle_SShare_Model::FLOAT_MODULE ] = 1;
 			}
 
 			// Inline display.
@@ -780,7 +828,7 @@ class Hustle_Module_Front {
 				$module->is_display_type_active( Hustle_SShare_Model::WIDGET_MODULE ) ||
 				$module->is_display_type_active( Hustle_SShare_Model::SHORTCODE_MODULE )
 			) {
-				$this->_module_types_to_display[ Hustle_SShare_Model::INLINE_MODULE ] = 1;
+				$this->module_types_to_display[ Hustle_SShare_Model::INLINE_MODULE ] = 1;
 			}
 		}
 	}
@@ -789,7 +837,7 @@ class Hustle_Module_Front {
 	 * Check if current page has renderable opt-ins.
 	 **/
 	public function has_modules() {
-		$has_modules = ! empty( $this->_non_inline_modules ) || ! empty( $this->_inline_modules );
+		$has_modules = ! empty( $this->non_inline_modules ) || ! empty( $this->inline_modules );
 		return apply_filters( 'hustle_front_handler', $has_modules );
 	}
 
@@ -802,37 +850,43 @@ class Hustle_Module_Front {
 		return false;
 	}
 
+	/**
+	 * Render non inline modules
+	 */
 	public function render_non_inline_modules() {
+		$html = '';
 
-		foreach ( $this->_non_inline_modules as $module ) {
+		foreach ( $this->non_inline_modules as $module ) {
 
 			if ( Hustle_Module_Model::SOCIAL_SHARING_MODULE !== $module->module_type ) {
-				$module->display();
-
+				$html .= $module->display();
 			} elseif ( $module->is_display_type_active( Hustle_SShare_Model::FLOAT_DESKTOP ) || $module->is_display_type_active( Hustle_SShare_Model::FLOAT_MOBILE ) ) {
-				$module->display( Hustle_SShare_Model::FLOAT_MODULE );
+				$html .= $module->display( Hustle_SShare_Model::FLOAT_MODULE );
 			}
 		}
+
+		add_action(
+			'wp_footer',
+			function() use ( $html ) {
+				echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			}
+		);
 	}
 
 	/**
 	 * Handles the data for the unsubscribe shortcode
 	 *
 	 * @since 3.0.5
-	 * @param array $atts The values passed through the shortcode attributes
+	 * @param array $atts The values passed through the shortcode attributes.
 	 * @return string The content to be rendered within the shortcode.
 	 */
 	public function unsubscribe_shortcode( $atts ) {
 		$messages = Hustle_Settings_Admin::get_unsubscribe_messages();
-		if ( isset( $_GET['token'] ) && isset( $_GET['email'] ) ) { // WPCS: CSRF ok.
-			$error_message  = $messages['invalid_data'];
-			$sanitized_data = Opt_In_Utils::validate_and_sanitize_fields( $_GET ); // WPCS: CSRF ok.
-			$email          = $sanitized_data['email'];
-			$nonce          = $sanitized_data['token'];
-			// checking if email is valid
-			if ( ! filter_var( $email, FILTER_VALIDATE_EMAIL ) ) {
-				return $error_message;
-			}
+		$email    = filter_input( INPUT_GET, 'email', FILTER_VALIDATE_EMAIL );
+		$nonce    = filter_input( INPUT_GET, 'token', FILTER_SANITIZE_SPECIAL_CHARS );
+		if ( $nonce && $email ) {
+			$error_message = $messages['invalid_data'];
+
 			$entry        = new Hustle_Entry_Model();
 			$unsubscribed = $entry->unsubscribe_email( $email, $nonce );
 			if ( $unsubscribed ) {
@@ -842,7 +896,13 @@ class Hustle_Module_Front {
 			}
 		}
 		// Show all modules' lists by default.
-		$attributes = shortcode_atts( array( 'id' => '-1', 'skip_confirmation' => false ), $atts );
+		$attributes = shortcode_atts(
+			array(
+				'id'                => '-1',
+				'skip_confirmation' => false,
+			),
+			$atts
+		);
 		$params     = array(
 			'ajax_step'         => false,
 			'shortcode_attr_id' => $attributes['id'],
@@ -863,7 +923,7 @@ class Hustle_Module_Front {
 		Opt_In_Utils::validate_ajax_call( 'hustle_gutenberg_get_unsubscribe_form' );
 
 		$atts = array();
-		$ids  = filter_input( INPUT_GET, 'module_ids' );
+		$ids  = filter_input( INPUT_GET, 'module_ids', FILTER_SANITIZE_SPECIAL_CHARS );
 		$skip = filter_input( INPUT_GET, 'skip_confirmation', FILTER_VALIDATE_BOOLEAN );
 
 		if ( $ids ) {
@@ -884,8 +944,8 @@ class Hustle_Module_Front {
 	 *
 	 * @since the beginning of time.
 	 *
-	 * @param array  $atts
-	 * @param string $content
+	 * @param array  $atts Attrs.
+	 * @param string $content Content.
 	 * @return string
 	 */
 	public function shortcode( $atts, $content ) {
@@ -923,23 +983,19 @@ class Hustle_Module_Front {
 
 		$custom_classes = esc_attr( $atts['css_class'] );
 
-		if ( isset( $this->_inline_modules[ $module_id ] ) ) {
-			$module = $this->_inline_modules[ $module_id ];
+		if ( isset( $this->inline_modules[ $module_id ] ) ) {
+			$module = $this->inline_modules[ $module_id ];
 
 			if ( ! $module->is_display_type_active( Hustle_Module_Model::SHORTCODE_MODULE ) ) {
 				return '';
 			}
 
 			// Display the module.
-			ob_start();
-
-			$module->display( Hustle_Module_Model::SHORTCODE_MODULE, $custom_classes );
-
-			return ob_get_clean();
+			return $module->display( Hustle_Module_Model::SHORTCODE_MODULE, $custom_classes );
 		}
 
-		if ( isset( $this->_non_inline_modules[ $module_id ] ) && ! empty( $content ) ) {
-			$module = $this->_non_inline_modules[ $module_id ];
+		if ( isset( $this->non_inline_modules[ $module_id ] ) && ! empty( $content ) ) {
+			$module = $this->non_inline_modules[ $module_id ];
 
 			// If shortcode click trigger is disabled, print nothing.
 			$settings = $module->get_settings()->to_array();
@@ -967,13 +1023,13 @@ class Hustle_Module_Front {
 	 *
 	 * @since the beginning of time.
 	 *
-	 * @param $content
+	 * @param string $content Content.
 	 * @return string
 	 */
 	public function show_after_page_post_content( $content ) {
 
 		// Return the content immediately if there are no modules or the page doesn't have a content to embed into.
-		if ( ! count( $this->_inline_modules ) || isset( $_REQUEST['fl_builder'] ) || is_home() || is_archive() ) { // CSRF: ok.
+		if ( ! count( $this->inline_modules ) || isset( $_REQUEST['fl_builder'] ) || is_home() || is_archive() ) {// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			return $content;
 		}
 
@@ -995,7 +1051,7 @@ class Hustle_Module_Front {
 			return $content;
 		}
 
-		$modules = apply_filters( 'hustle_inline_modules_to_display', $this->_inline_modules );
+		$modules = apply_filters( 'hustle_inline_modules_to_display', $this->inline_modules );
 
 		foreach ( $modules as $module ) {
 
@@ -1005,10 +1061,7 @@ class Hustle_Module_Front {
 			}
 
 			$custom_classes = apply_filters( 'hustle_inline_module_custom_classes', '', $module );
-
-			ob_start();
-			$module->display( Hustle_Module_Model::INLINE_MODULE, $custom_classes );
-			$module_markup = ob_get_clean();
+			$module_markup  = $module->display( Hustle_Module_Model::INLINE_MODULE, $custom_classes );
 
 			$display          = $module->get_display()->to_array();
 			$display_position = $display['inline_position'];

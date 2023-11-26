@@ -1,4 +1,9 @@
-<?php
+<?php // phpcs:ignore WordPress.Files.FileName.InvalidClassFileName
+/**
+ * Hustle_Module_Widget
+ *
+ * @package Hustle
+ */
 
 /**
  * Class Hustle_Module_Widget
@@ -6,7 +11,9 @@
 class Hustle_Module_Widget extends WP_Widget {
 
 	/**
-	 * @var string Widget Id
+	 * Widget Id
+	 *
+	 * @var string
 	 */
 	const WIDGET_ID = 'hustle_module_widget';
 
@@ -17,8 +24,9 @@ class Hustle_Module_Widget extends WP_Widget {
 	public function __construct() {
 		parent::__construct(
 			self::WIDGET_ID,
-			__( 'Hustle', 'hustle' ),
-			array( 'description' => __( 'A widget to add Hustle Embeds and Social Sharing.', 'hustle' ) )
+			Opt_In_Utils::get_plugin_name(),
+			/* translators: Plugin name */
+			array( 'description' => sprintf( __( 'A widget to add %s Embeds and Social Sharing.', 'hustle' ), Opt_In_Utils::get_plugin_name() ) )
 		);
 	}
 
@@ -28,43 +36,33 @@ class Hustle_Module_Widget extends WP_Widget {
 	 *
 	 * Front-end display of widget.
 	 *
-	 * @param array $args
+	 * @param array $args Args.
 	 * @param array $instance Previously saved values from database.
 	 * @return string
 	 */
 	public function widget( $args, $instance ) {
-		// phpcs:disable
-		if ( empty( $instance['module_id'] ) ) {
+		if ( ! empty( $instance['module_id'] ) ) {
+			$module = Hustle_Module_Collection::instance()->return_model_from_id( $instance['module_id'] );
 
-			echo $args['before_widget'];
-
-			if ( ! empty( $instance['title'] ) ) {
-				echo $args['before_title'] . apply_filters( 'widget_title', $instance['title'] ). $args['after_title'];
+			if ( is_wp_error( $module ) || ! $module || empty( $module->active ) || ! $module->is_display_type_active( Hustle_Module_Model::WIDGET_MODULE ) ) {
+				return;
 			}
-			echo esc_attr__( 'Select Module', 'hustle' );
-
-			echo $args['after_widget'];
-
-			return;
 		}
 
-		$module = Hustle_Module_Collection::instance()->return_model_from_id( $instance['module_id'] );
-
-		if ( is_wp_error( $module ) || ! $module || empty( $module->active ) || ! $module->is_display_type_active( Hustle_Module_Model::WIDGET_MODULE ) ) {
-			return;
-		}
-
-		echo $args['before_widget'];
+		echo wp_kses_post( $args['before_widget'] );
 
 		if ( ! empty( $instance['title'] ) ) {
-			echo $args['before_title'] . apply_filters( 'widget_title', $instance['title'] ). $args['after_title'];
+			echo wp_kses_post( $args['before_title'] . apply_filters( 'widget_title', $instance['title'] ) . $args['after_title'] );
 		}
 
-		$custom_classes = apply_filters( 'hustle_widget_module_custom_classes', '', $module );
-		$module->display( Hustle_Module_Model::WIDGET_MODULE, $custom_classes );
+		if ( ! empty( $instance['module_id'] ) ) {
+			$custom_classes = apply_filters( 'hustle_widget_module_custom_classes', '', $module );
+			echo $module->display( Hustle_Module_Model::WIDGET_MODULE, $custom_classes ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		} else {
+			esc_attr_e( 'Select Module', 'hustle' );
+		}
 
-		echo $args['after_widget'];
-		// phpcs:enable
+		echo wp_kses_post( $args['after_widget'] );
 	}
 
 
@@ -91,20 +89,16 @@ class Hustle_Module_Widget extends WP_Widget {
 			<select name="<?php echo esc_attr( $this->get_field_name( 'module_id' ) ); ?>" id="hustle_module_id">
 				<option value=""><?php echo esc_attr__( 'Select Module', 'hustle' ); ?></option>
 				<?php
-					$types = array( 'embedded', 'social_sharing' );
+				$types = array( 'embedded', 'social_sharing' );
 				foreach ( Hustle_Module_Collection::instance()->get_embed_id_names( $types ) as $mod ) :
 					$module = new Hustle_Module_Model( $mod->module_id );
 					if ( is_wp_error( $module ) ) {
 						continue;
 					}
-					// if( $module->settings->widget->show_in_front() ):
 					?>
 					<option <?php selected( $instance['module_id'], $mod->module_id ); ?> value="<?php echo esc_attr( $mod->module_id ); ?>"><?php echo esc_attr( $mod->module_name ); ?></option>
 
-					<?php
-					// endif;
-						endforeach;
-				?>
+				<?php endforeach; ?>
 			</select>
 		</p>
 		<?php

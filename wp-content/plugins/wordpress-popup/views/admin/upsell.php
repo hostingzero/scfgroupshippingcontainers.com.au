@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<p><?php printf( esc_html__( 'Build %1$sunlimited%2$s pop-ups, slide-ins, embeds, and social sharing modules with Hustle Pro. No limits on your marketing efforts = more leads and increased sales. Nice!', 'hustle' ), '<strong>', '</strong>' ); ?></p>
 				<p><?php esc_html_e( 'Plus – you’ll get WPMU DEV membership, which includes our award-winning Smush Pro plugin for image optimization, 24/7 live WordPress support, and unlimited usage of all our premium plugins.', 'hustle' ); ?></p>
 				<a href="<?php echo esc_url( Opt_In_Utils::get_link( 'plugin', 'hustle_propage_topbutton' ) ); ?>" class="sui-button sui-button-lg sui-button-purple" target="_blank">
-					<?php esc_html_e( 'Try Hustle Pro for Free Today', 'hustle' ); ?>
+					<?php esc_html_e( 'Upgrade to Pro', 'hustle' ); ?>
 				</a>
 				<div class="sui-reviews">
 					<span class="sui-reviews__stars"></span>
@@ -74,14 +74,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<div class="sui-upgrade-page-features__item">
 				<i class="sui-icon-wpmudev-logo" aria-hidden="true"></i>
 				<h3><?php esc_html_e( 'The WPMU DEV Guarantee', 'hustle' ); ?></h3>
-				<p><?php esc_html_e( "You'll be delighted with Hustle Pro and everything else included in your membership 😁 You can trial the plugin first with a WPMU DEV Membership, and if you continue but change your mind, you can cancel any time.", 'hustle' ); ?></p>
+				<p><?php esc_html_e( "You'll be delighted with Hustle Pro! 🙂 However, if you're not happy in any way, we have a 100%, 30-day money-back guarantee. Cancel within the first 30 days and we'll refund your money, no questions asked.", 'hustle' ); ?></p>
 			</div>
 		</div>
 	</div>
 	<div class="sui-upgrade-page-cta">
 		<div class="sui-upgrade-page-cta__inner">
 			<h2><?php esc_html_e( 'Join 771,093 Happy Members', 'hustle' ); ?></h2>
-			<p><?php esc_html_e( "97% of customers are happy with WPMU DEV's service, and it’s a great time to join them: as a Hustle user you’ll get a free trial period, so you can see what all the fuss is about. ", 'hustle' ); ?></p>
+			<p><?php esc_html_e( "97% of customers are happy with WPMU DEV's service, and it's a great time to join them! Hustle users can unlock our full suite of Pro WP plugins, time-saving site management, and integrated client billing/management tools.", 'hustle' ); ?></p>
 			<a href="<?php echo esc_url( Opt_In_Utils::get_link( 'plugin', 'hustle_propage_bottombutton' ) ); ?>" class="sui-button sui-button-lg sui-button-purple" target="_blank">
 				<?php esc_html_e( 'Get Hustle Pro and get a better WordPress', 'hustle' ); ?>
 			</a>
@@ -89,7 +89,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<?php esc_html_e( 'Get Hustle Pro and Get a Better WordPress', 'hustle' ); ?>
 			</button>
 			<a href="<?php echo esc_url( Opt_In_Utils::get_link( 'plugin', 'hustle_propage_bottombutton' ) ); ?>" target="_blank">
-				<?php esc_html_e( 'Try Pro for Free Today', 'hustle' ); ?>
+				<?php esc_html_e( 'Upgrade to Pro', 'hustle' ); ?>
 			</a>
 		</div>
 	</div>

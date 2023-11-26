@@ -6,7 +6,9 @@
  * @since 4.3.0
  */
 
-// phpcs:disable Generic.WhiteSpace.ScopeIndent.Incorrect
+global $wp_locale;
+
+$is_rtl = $wp_locale->is_rtl();
 
 $container = '.hustle-layout .hustle-image';
 $component = $container . ' img';
@@ -349,5 +351,10 @@ if ( '' !== $image ) {
 				$style         .= '}';
 			}
 		}
+	}
+	if ( $is_rtl ) {
+		$style     .= $prefix_mobile . $component . ' {';
+			$style .= 'transform: scaleX(-1);';
+		$style     .= '}';
 	}
 }

@@ -93,7 +93,7 @@
 		?>
 	</p>
 	<p class="privacy-policy-tutorial">
-		<?php esc_html_e( 'By default Hustle optionally use these third-party integrations:', 'hustle' ); ?>
+		<?php /* translators: Plugin name */ echo esc_html( sprintf( __( 'By default %s optionally use these third-party integrations:', 'hustle' ), Opt_In_Utils::get_plugin_name() ) ); ?>
 	</p>
 	<ul class="privacy-policy-tutorial">
 		<li><?php esc_html_e( 'ActiveCampaign. Enabled when you activate and setup ActiveCampaign on Email Collection settings.', 'hustle' ); ?></li>
@@ -105,7 +105,7 @@
 		<li><?php esc_html_e( 'GetResponse. Enabled when you activate and setup GetResponse on Email Collection settings.', 'hustle' ); ?></li>
 		<li><?php esc_html_e( 'HubSpot. Enabled when you activate and setup HubSpot on Email Collection settings.', 'hustle' ); ?></li>
 		<li><?php esc_html_e( 'iContact. Enabled when you activate and setup iContact on Email Collection settings.', 'hustle' ); ?></li>
-		<li><?php esc_html_e( 'Infusionsoft. Enabled when you activate and setup Infusionsoft on Email Collection settings.', 'hustle' ); ?></li>
+		<li><?php esc_html_e( 'Keap. Enabled when you activate and setup Keap on Email Collection settings.', 'hustle' ); ?></li>
 		<li><?php esc_html_e( 'Mad Mimi. Enabled when you activate and setup Mad Mimi on Email Collection settings.', 'hustle' ); ?></li>
 		<li><?php esc_html_e( 'Mailchimp. Enabled when you activate and setup Mailchimp on Email Collection settings.', 'hustle' ); ?></li>
 		<li><?php esc_html_e( 'MailerLite. Enabled when you activate and setup MailerLite on Email Collection settings.', 'hustle' ); ?></li>
@@ -129,7 +129,7 @@
 	<p><?php esc_html_e( 'We use GetResponse to manage our subscriber lists. Their privacy policy can be found here : https://www.getresponse.com/legal/privacy.html?lang=en.', 'hustle' ); ?></p>
 	<p><?php esc_html_e( 'We use HubSpot to manage our subscriber. Their privacy policy can be found here : https://legal.hubspot.com/legal-stuff.', 'hustle' ); ?></p>
 	<p><?php esc_html_e( 'We use iContact to manage our subscriber. Their privacy policy can be found here : https://www.icontact.com/legal/privacy.', 'hustle' ); ?></p>
-	<p><?php esc_html_e( 'We use Infusionsoft to manage our subscriber. Their privacy policy can be found here : https://www.infusionsoft.com/legal/privacy-policy.', 'hustle' ); ?></p>
+	<p><?php esc_html_e( 'We use Keap to manage our subscriber. Their privacy policy can be found here : https://keap.com/legal/privacy-policy.', 'hustle' ); ?></p>
 	<p><?php esc_html_e( 'We use Mad Mimi to manage our subscriber. Their privacy policy can be found here : https://madmimi.com/legal/terms.', 'hustle' ); ?></p>
 	<p><?php esc_html_e( 'We use Mailchimp to manage our subscriber list. Their privacy policy can be found here : https://mailchimp.com/legal/privacy/.', 'hustle' ); ?></p>
 	<p><?php esc_html_e( 'We use MailerLite to manage our subscriber. Their privacy policy can be found here : https://www.mailerlite.com/privacy-policy.', 'hustle' ); ?></p>

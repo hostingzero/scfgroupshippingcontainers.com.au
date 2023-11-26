@@ -1,4 +1,9 @@
-<?php
+<?php // phpcs:ignore WordPress.Files.FileName.InvalidClassFileName
+/**
+ * Hustle_GHBlock_Social_Share class
+ *
+ * @package Hustle
+ */
 
 /**
  * Class Hustle_GHBlock_Social_Share
@@ -14,7 +19,7 @@ class Hustle_GHBlock_Social_Share extends Hustle_GHBlock_Abstract {
 	 *
 	 * @var string
 	 */
-	protected $_slug = 'social-share';
+	protected $slug = 'social-share';
 
 	/**
 	 * Hustle_GHBlock_Social_Share constructor.
@@ -22,7 +27,7 @@ class Hustle_GHBlock_Social_Share extends Hustle_GHBlock_Abstract {
 	 * @since 1.0 Gutenberg Addon
 	 */
 	public function __construct() {
-		// Initialize block
+		// Initialize block.
 		$this->init();
 	}
 
@@ -30,7 +35,7 @@ class Hustle_GHBlock_Social_Share extends Hustle_GHBlock_Abstract {
 	 * Render block markup on front-end
 	 *
 	 * @since 1.0 Gutenberg Addon
-	 * @param array $properties Block properties
+	 * @param array $properties Block properties.
 	 *
 	 * @return string
 	 */
@@ -38,7 +43,7 @@ class Hustle_GHBlock_Social_Share extends Hustle_GHBlock_Abstract {
 		$css_class = isset( $properties['css_class'] ) ? $properties['css_class'] : '';
 
 		if ( isset( $properties['id'] ) ) {
-			return '[wd_hustle id="' . $properties['id'] . '" type="social_sharing" css_class="' . $css_class . '"/]';
+			return '[wd_hustle id="' . esc_attr( $properties['id'] ) . '" type="social_sharing" css_class="' . esc_attr( $css_class ) . '"/]';
 		}
 	}
 
@@ -52,15 +57,16 @@ class Hustle_GHBlock_Social_Share extends Hustle_GHBlock_Abstract {
 
 		Hustle_Module_Front::add_hui_scripts();
 
-		// Scripts
+		// Scripts.
 		wp_enqueue_script(
 			'hustle-block-social-share',
 			Hustle_Gutenberg::get_plugin_url() . '/js/social-share-block.min.js',
-			array( 'wp-blocks', 'wp-i18n', 'wp-element' ),
-			filemtime( Hustle_Gutenberg::get_plugin_dir() . '/js/social-share-block.min.js' )
+			array( 'wp-blocks', 'wp-i18n', 'wp-element', 'hui_scripts' ),
+			filemtime( Hustle_Gutenberg::get_plugin_dir() . '/js/social-share-block.min.js' ),
+			true
 		);
 
-		// Localize scripts
+		// Localize scripts.
 		wp_localize_script(
 			'hustle-block-social-share',
 			'hustle_ss_data',
@@ -89,11 +95,21 @@ class Hustle_GHBlock_Social_Share extends Hustle_GHBlock_Abstract {
 
 	}
 
+	/**
+	 * Get modules
+	 *
+	 * @return array
+	 */
 	public function get_modules() {
 		$module_list = $this->get_modules_by_type( 'social_sharing' );
 		return $module_list;
 	}
 
+	/**
+	 * Get texts for localize
+	 *
+	 * @return array
+	 */
 	private function localize() {
 		return array(
 			'advanced'               => esc_html__( 'Advanced', 'hustle' ),
@@ -103,10 +119,17 @@ class Hustle_GHBlock_Social_Share extends Hustle_GHBlock_Abstract {
 			'customize_module'       => esc_html__( 'Customize Social Share', 'hustle' ),
 			'rendering'              => esc_html__( 'Rendering...', 'hustle' ),
 			'block_name'             => esc_html__( 'Social Share', 'hustle' ),
-			'block_description'      => esc_html__( 'Display your Hustle Social Share module in this block.', 'hustle' ),
+			/* translators: Plugin name */
+			'block_description'      => esc_html( sprintf( __( 'Display your %s Social Share module in this block.', 'hustle' ), Opt_In_Utils::get_plugin_name() ) ),
 		);
 	}
 
+	/**
+	 * Is module included
+	 *
+	 * @param Hustle_Model $module Module.
+	 * @return bool
+	 */
 	protected function is_module_included( Hustle_Model $module ) {
 		return $module->is_display_type_active( Hustle_Module_Model::SHORTCODE_MODULE );
 	}

@@ -29,11 +29,11 @@
 			]
 		},
 		{
-			"title": "MailChimp",
+			"title": "Mailchimp",
 			"slug": "everest-forms-mailchimp",
-			"name": "Everest Forms MailChimp",
+			"name": "Everest Forms Mailchimp",
 			"image": "extensions-json/sections/images/mailchimp.png",
-			"excerpt": "Allows your users to subscribe to MailChimp through form submissions. Users filling up the forms can be directly added to your subscribers list in MailChimp.",
+			"excerpt": "Allows your users to subscribe to Mailchimp through form submissions. Users filling up the forms can be directly added to your subscribers list in Mailchimp.",
 			"link": "https://wpeverest.com/wordpress-plugins/everest-forms/mailchimp/?utm_source=addons-page&utm_medium=banner&utm_campaign=evf-upgrade-to-pro&utm_content=mailchimp",
 			"plan": [
 				"personal",
@@ -202,7 +202,7 @@
 		{
 			"title": "Email Templates",
 			"slug": "everest-forms-email-templates",
-			"name": "Everest Forms Post Submissions",
+			"name": "Everest Forms Email Templates",
 			"image": "extensions-json/sections/images/email-templates.png",
 			"excerpt": "Allows you to make email design changes without coding. Powerful customizing panel with live preview helps you customize colors, fonts, spacing, background, alignment and more.",
 			"link": "https://wpeverest.com/wordpress-plugins/everest-forms/email-templates/?utm_source=addons-page&utm_medium=banner&utm_campaign=evf-upgrade-to-pro&utm_content=email-templates",
@@ -377,6 +377,96 @@
 			"image": "extensions-json/sections/images/zoho.png",
 			"excerpt": "Everest Forms Zoho CRM add-on is a WordPress Zoho CRM integration plugin that allows you to easily send Everest Forms entries directly to your Zoho CRM account. ",
 			"link": "https://wpeverest.com/wordpress-plugins/everest-forms/zoho-crm/?utm_source=addons-page&utm_medium=banner&utm_campaign=evf-upgrade-to-pro&utm_content=zoho-crm",
+			"plan": [
+				"professional",
+				"agency"
+			]
+		},
+		{
+			"title": "Salesforce",
+			"slug": "everest-forms-salesforce",
+			"name": "Everest Forms Salesforce",
+			"image": "extensions-json/sections/images/salesforce.jpg",
+			"excerpt": "Everest Forms Salesforce add-on is a WordPress Salesforce integration plugin that allows you to easily send Everest Forms entries directly to your Salesforce account. ",
+			"link": "https://wpeverest.com/wordpress-plugins/everest-forms/salesforce/?utm_source=addons-page&utm_medium=banner&utm_campaign=evf-upgrade-to-pro&utm_content=salesforce",
+			"plan": [
+				"professional",
+				"agency"
+			]
+		},
+		{
+			"title": "Constant Contact",
+			"slug": "everest-forms-constant-contact",
+			"name": "Everest Forms Constant Contact",
+			"image": "extensions-json/sections/images/constant-contact.jpg",
+			"excerpt": "Everest Forms Constant Contact add-on is a WordPress Constant Contact integration plugin that allows you to easily send Everest Forms entries directly to your Constant Contact account. ",
+			"link": "https://wpeverest.com/wordpress-plugins/everest-forms/constant-contact/?utm_source=addons-page&utm_medium=banner&utm_campaign=evf-upgrade-to-pro&utm_content=constant-contact",
+			"plan": [
+				"plus",
+				"professional",
+				"agency"
+			]
+		},
+		{
+			"title": "Cloud Storage",
+			"slug": "everest-forms-cloud-storage",
+			"name": "Everest Forms Cloud Storage",
+			"image": "extensions-json/sections/images/cloud-storage.jpg",
+			"excerpt": "Everest Forms Cloud Storage add-on is a WordPress Cloud Storage integration plugin that allows you to easily send Everest Forms files directly to your Cloud Storage account. ",
+			"link": "https://wpeverest.com/wordpress-plugins/everest-forms/cloud-storage/?utm_source=addons-page&utm_medium=banner&utm_campaign=evf-upgrade-to-pro&utm_content=cloud-storage",
+			"plan": [
+				"personal",
+				"plus",
+				"professional",
+				"agency"
+			]
+		},
+		{
+			"title": "GetResponse",
+			"slug": "everest-forms-getresponse",
+			"name": "Everest Forms GetResponse",
+			"image": "extensions-json/sections/images/getresponse.jpg",
+			"excerpt": "Allows your users to subscribe to GetResponse through form submissions. Users filling up the forms can be directly added to your subscribers list in GetResponse.",
+			"link": "https://wpeverest.com/wordpress-plugins/everest-forms/getresponse/?utm_source=addons-page&utm_medium=banner&utm_campaign=evf-upgrade-to-pro&utm_content=getresponse",
+			"plan": [
+				"plus",
+				"professional",
+				"agency"
+			]
+		},
+		{
+			"title": "Sendinblue",
+			"slug": "everest-forms-sendinblue",
+			"name": "Everest Forms Sendinblue",
+			"image": "extensions-json/sections/images/sendinblue.jpg",
+			"excerpt": "Allows your users to subscribe to Sendinblue through form submissions. Users filling up the forms can be directly added to your subscribers list in Sendinblue.",
+			"link": "https://wpeverest.com/wordpress-plugins/everest-forms/sendinblue/?utm_source=addons-page&utm_medium=banner&utm_campaign=evf-upgrade-to-pro&utm_content=sendinblue",
+			"plan": [
+				"plus",
+				"professional",
+				"agency"
+			]
+		},
+		{
+			"title": "Conversational Forms",
+			"slug": "everest-forms-conversational-forms",
+			"name": "Everest Forms Conversational Forms",
+			"image": "extensions-json/sections/images/conversational-forms.png",
+			"excerpt": "Allow you to make your form submission more interactive. The Everest Forms Conversational Forms Add-on will assist you in modernizing your questionnaires, contact forms, and application forms. It enhances your form to the next level and beyond!",
+			"link": "https://wpeverest.com/wordpress-plugins/everest-forms/conversational-forms/?utm_source=addons-page&utm_medium=banner&utm_campaign=evf-upgrade-to-pro&utm_content=conversational-forms",
+			"plan": [
+				"plus",
+				"professional",
+				"agency"
+			]
+		},
+    {
+			"title": "Authorize.Net",
+			"slug": "everest-forms-authorize-net",
+			"name": "Everest Forms Authorize.Net",
+			"image": "extensions-json/sections/images/authorize-net.png",
+			"excerpt": "Allows you to integrate online payment service to your e-commerce website. You can connect your Everest forms with Authorize.Net to easily collect payments, donations, and online orders.",
+			"link": "https://wpeverest.com/wordpress-plugins/everest-forms/authorize-net/?utm_source=addons-page&utm_medium=banner&utm_campaign=evf-upgrade-to-pro&utm_content=authorize-net",
 			"plan": [
 				"professional",
 				"agency"

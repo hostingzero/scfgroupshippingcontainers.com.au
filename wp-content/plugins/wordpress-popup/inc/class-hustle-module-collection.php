@@ -121,7 +121,7 @@ class Hustle_Module_Collection {
 			$join .= 'JOIN ' . Hustle_Db::modules_meta_table() . ' AS cf1 ON cf1.`module_id` = m.`module_id` AND cf1.`meta_key` = "edit_roles" ';
 			$join .= $this->wpdb->prepare(
 				'AND ( cf1.`meta_value` LIKE %s ) ',
-				'%"' . $filter_role . '"%'
+				'%"' . esc_sql( $filter_role ) . '"%'
 			);
 		}
 
@@ -135,7 +135,7 @@ class Hustle_Module_Collection {
 			foreach ( $current_user_roles as $role ) {
 				$join .= $this->wpdb->prepare(
 					' OR cf1.`meta_value` LIKE %s',
-					'%"' . $role . '"%'
+					'%"' . esc_sql( $role ) . '"%'
 				);
 			}
 			$join .= ')';
@@ -145,10 +145,9 @@ class Hustle_Module_Collection {
 		// Search.
 		if (
 			isset( $args['filter'] )
-			&& isset( $args['filter']['q'] )
 			&& ! empty( $args['filter']['q'] )
 		) {
-			$module_type_condition .= $this->wpdb->prepare( 'AND m.`module_name` LIKE %s ', '%' . $args['filter']['q'] . '%' );
+			$module_type_condition .= $this->wpdb->prepare( 'AND m.`module_name` LIKE %s ', '%' . esc_sql( $args['filter']['q'] ) . '%' );
 		}
 
 		// Build query.
@@ -199,7 +198,7 @@ class Hustle_Module_Collection {
 				'module_mode',
 			);
 			if ( ! empty( $args['filter']['sort'] ) && in_array( $args['filter']['sort'], $allowed_fields, true ) ) {
-				$query .= 'm.' . $args['filter']['sort'] . ', ';
+				$query .= 'm.' . esc_sql( $args['filter']['sort'] ) . ', ';
 			}
 			$query .= 'm.`module_id` DESC ';
 		}
@@ -281,7 +280,7 @@ class Hustle_Module_Collection {
 	private function prepare_except_module_types_condition( $excepts ) {
 		$except_condition = '';
 		foreach ( $excepts as $except ) {
-			$except_condition .= " AND `module_type` != '" . $except . "'";
+			$except_condition .= " AND `module_type` != '" . esc_sql( $except ) . "'";
 		}
 		return $except_condition;
 	}
@@ -365,11 +364,10 @@ class Hustle_Module_Collection {
 			$meta_result = $db->get_results( $sql );
 			$meta        = array();
 			foreach ( $meta_result as $row ) {
-				if ( 'shortcode_id' !== $row->meta_key ) {
-					$meta[ $row->meta_key ] = json_decode( $row->meta_value, true ); // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
-				} else {
-					$meta[ $row->meta_key ] = $row->meta_value; // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.SlowDBQuery.slow_db_query_meta_key
-				}
+				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+				$meta[ $row->meta_key ] = 'shortcode_id' !== $row->meta_key
+						? json_decode( $row->meta_value, true )
+						: $row->meta_value;
 			}
 			$modules[ $module_id ]->meta = $meta;
 		}
@@ -399,7 +397,7 @@ class Hustle_Module_Collection {
 	 * @since 4.0.0
 	 */
 	private function get_filters() {
-		$filters = isset( $_REQUEST['filter'] ) ? $_REQUEST['filter'] : array();
+		$filters = isset( $_REQUEST['filter'] ) ? $_REQUEST['filter'] : array(); //phpcs:ignore
 		if ( isset( $filters['types'] ) && is_string( $filters['types'] ) ) {
 			$filters['types'] = explode( ',', $filters['types'] );
 		}
@@ -423,17 +421,15 @@ class Hustle_Module_Collection {
 		global $wpdb;
 		$modules_meta_table = Hustle_Db::modules_meta_table();
 
-		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$query = $wpdb->prepare(
-			"SELECT `module_id`
-			FROM {$modules_meta_table}
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			"SELECT `module_id` FROM {$modules_meta_table}
 			WHERE `meta_value`
 			LIKE %s
 			AND `meta_key` = 'integrations_settings'",
 			'%' . $slug . '%'
 		);
-		return $wpdb->get_col( $query ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
-		// phpcs:enable
+		return $wpdb->get_col( $query ); // phpcs:ignore
 	}
 
 }

@@ -51,10 +51,153 @@ class EVF_Smart_Tags {
 				'user_email'             => esc_html__( 'User Email', 'everest-forms' ),
 				'user_role'              => esc_html__( 'User Role', 'everest-forms' ),
 				'referrer_url'           => esc_html__( 'Referrer URL', 'everest-forms' ),
+				'form_id'                => esc_html__( 'Form ID', 'everest-forms' ),
 			)
 		);
 
 		return $smart_tags;
+	}
+
+	/**
+	 * Other Regex Expression Lists.
+	 *
+	 * @return string|array
+	 */
+	public function regex_expression_lists() {
+		$regex_lists = apply_filters(
+			'everest_forms_regex_expression_lists',
+			array(
+				array(
+					'text'  => __( 'Alpha', 'everest-forms' ),
+					'value' => '^[a-zA-Z]+$',
+				),
+				array(
+					'text'  => __( 'Alphanumeric', 'everest-forms' ),
+					'value' => '^[a-zA-Z0-9]+$',
+				),
+				array(
+					'text'  => __( 'Color', 'everest-forms' ),
+					'value' => '^#?([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$',
+				),
+				array(
+					'text'  => __( 'Country Code (2 Character)', 'everest-forms' ),
+					'value' => '^[A-Za-z]{2}$',
+				),
+				array(
+					'text'  => __( 'Country Code (3 Character)', 'everest-forms' ),
+					'value' => '^[A-Za-z]{3}$',
+				),
+				array(
+					'text'  => __( 'Date (mm/dd)', 'everest-forms' ),
+					'value' => '^(0[1-9]|1[0-2])\/(0[1-9]|1\d|2\d|3[01])$',
+				),
+				array(
+					'text'  => __( 'Date (dd/mm)', 'everest-forms' ),
+					'value' => '^(0[1-9]|1\d|2\d|3[01])\/(0[1-9]|1[0-2])$',
+				),
+				array(
+					'text'  => __( 'Date (mm.dd.yyyy)', 'everest-forms' ),
+					'value' => '^(0[1-9]|1[0-2])\.(0[1-9]|1\d|2\d|3[01])\.\d{4}$',
+				),
+				array(
+					'text'  => __( 'Date (dd.mm.yyyy)', 'everest-forms' ),
+					'value' => '^(0[1-9]|1\d|2\d|3[01])\.(0[1-9]|1[0-2])\.\d{4}$',
+				),
+				array(
+					'text'  => __( 'Date (yyyy-mm-dd)', 'everest-forms' ),
+					'value' => '^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|1\d|2\d|3[01])$',
+				),
+				array(
+					'text'  => __( 'Date (mm/dd/yyyy)', 'everest-forms' ),
+					'value' => '^(0[1-9]|1[0-2])\/(0[1-9]|1\d|2\d|3[01])\/\d{4}$',
+				),
+				array(
+					'text'  => __( 'Date (dd/mm/yyyy)', 'everest-forms' ),
+					'value' => '^(0[1-9]|1\d|2\d|3[01])\/(0[1-9]|1[0-2])\/\d{4}$',
+				),
+				array(
+					'text'  => __( 'Email', 'everest-forms' ),
+					'value' => '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$',
+				),
+				array(
+					'text'  => __( 'IP (Version 4)', 'everest-forms' ),
+					'value' => '^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?).){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$',
+				),
+				array(
+					'text'  => __( 'IP (Version 6)', 'everest-forms' ),
+					'value' => '((^|:)([0-9a-fA-F]{0,4})){1,8}$',
+				),
+				array(
+					'text'  => __( 'ISBN', 'everest-forms' ),
+					'value' => '^978(?:-[\d]+){3}-[\d]$',
+				),
+				array(
+					'text'  => __( 'Latitude or Longitude', 'everest-forms' ),
+					'value' => '-?\d{1,3}\.\d+',
+				),
+				array(
+					'text'  => __( 'Numeric', 'everest-forms' ),
+					'value' => '^[0-9]+$',
+				),
+				array(
+					'text'  => __( 'Password (Numeric, lower, upper)', 'everest-forms' ),
+					'value' => '^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s).*$',
+				),
+				array(
+					'text'  => __( 'Password (Numeric, lower, upper, min 8)', 'everest-forms' ),
+					'value' => '(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}',
+				),
+				array(
+					'text'  => __( 'Phone - General', 'everest-forms' ),
+					'value' => '[0-9+()-. ]+',
+				),
+				array(
+					'text'  => __( 'Phone - UK', 'everest-forms' ),
+					'value' => '^\+44\d{10}$',
+				),
+				array(
+					'text'  => __( 'Phone - US: 123-456-7890', 'everest-forms' ),
+					'value' => '\d{3}[\-]\d{3}[\-]\d{4}',
+				),
+				array(
+					'text'  => __( 'Phone - US: (123)456-7890', 'everest-forms' ),
+					'value' => '\([0-9]{3}\)[0-9]{3}-[0-9]{4}',
+				),
+				array(
+					'text'  => __( 'Phone - US: (123) 456-7890', 'everest-forms' ),
+					'value' => '\([0-9]{3}\) [0-9]{3}-[0-9]{4}',
+				),
+				array(
+					'text'  => __( 'Phone - US: Flexible', 'everest-forms' ),
+					'value' => '(?:\(\d{3}\)|\d{3})[- ]?\d{3}[- ]?\d{4}',
+				),
+				array(
+					'text'  => __( 'Postal Code (UK)', 'everest-forms' ),
+					'value' => '^[A-Za-z]{1,2}\d{1,2}[A-Za-z]?\s?\d[A-Za-z]{2}$',
+				),
+				array(
+					'text'  => __( 'Price (1.23)', 'everest-forms' ),
+					'value' => '\d+(\.\d{2})?$',
+				),
+				array(
+					'text'  => __( 'Slug', 'everest-forms' ),
+					'value' => '^[a-zA-Z0-9-]+$',
+				),
+				array(
+					'text'  => __( 'Time (hh:mm:ss)', 'everest-forms' ),
+					'value' => '(0[0-9]|1[0-9]|2[0-3])(:[0-5][0-9]){2}',
+				),
+				array(
+					'text'  => __( 'URL', 'everest-forms' ),
+					'value' => '^(https?|ftp):\/\/[^\s\/$.?#].[^\s]*$',
+				),
+				array(
+					'text'  => __( 'Zip Code', 'everest-forms' ),
+					'value' => '(\d{5}([\-]\d{4})?)',
+				),
+			)
+		);
+		return $regex_lists;
 	}
 
 	/**
@@ -79,9 +222,9 @@ class EVF_Smart_Tags {
 				$uploads        = wp_upload_dir();
 
 				if ( 'fullname' !== $field_id && 'email' !== $field_id && 'subject' !== $field_id && 'message' !== $field_id ) {
-					$value = ! empty( $fields[ $mixed_field_id[1] ]['value'] ) ? evf_sanitize_textarea_field( $fields[ $mixed_field_id[1] ]['value'] ) : '';
+					$value = isset( $fields[ $mixed_field_id[1] ]['value'] ) && ! empty( $fields[ $mixed_field_id[1] ]['value'] ) ? evf_sanitize_textarea_field( $fields[ $mixed_field_id[1] ]['value'] ) : '';
 				} else {
-					$value = ! empty( $fields[ $field_id ]['value'] ) ? evf_sanitize_textarea_field( $fields[ $field_id ]['value'] ) : '';
+					$value = isset( $fields[ $field_id ]['value'] ) && ! empty( $fields[ $field_id ]['value'] ) ? evf_sanitize_textarea_field( $fields[ $field_id ]['value'] ) : '';
 				}
 
 				$value = apply_filters( 'everest_forms_smart_tags_value', $value, $field_id, $fields, $form_data );
@@ -117,7 +260,7 @@ class EVF_Smart_Tags {
 					}
 
 					// Properly display Checkboxes field in smart tag.
-					if ( isset( $value['images'] ) && ( 'checkbox' === $fields[ $mixed_field_id[1] ]['type'] || 'payment-checkbox' === $fields[ $mixed_field_id[1] ]['type'] ) ) {
+					if ( isset( $value['images'] ) && ( 'checkbox' === $fields[ $mixed_field_id[1] ]['type'] ) ) {
 						$checkbox_images = '';
 						foreach ( $value['images'] as $image_key => $image_value ) {
 							if ( ! is_array( $image_value ) && false !== strpos( $image_value, $uploads['basedir'] ) ) {
@@ -165,7 +308,8 @@ class EVF_Smart_Tags {
 						if ( in_array( $value['type'], array( 'radio', 'payment-multiple' ), true ) ) {
 							$value = $value['label'];
 						} elseif ( in_array( $value['type'], array( 'checkbox', 'payment-checkbox' ), true ) ) {
-							$value = implode( ', ', $value['label'] );
+							$value = implode( ',', $value['label'] );
+
 						}
 					} elseif ( isset( $value['number_of_rating'], $value['value'] ) ) {
 						$value = (string) $value['value'] . '/' . (string) $value['number_of_rating'];
@@ -265,6 +409,26 @@ class EVF_Smart_Tags {
 						$content = str_replace( '{' . $other_tag . '}', $name, $content );
 						break;
 
+					case 'first_name':
+						if ( is_user_logged_in() ) {
+							$user = wp_get_current_user();
+							$name = sanitize_text_field( $user->user_firstname );
+						} else {
+							$name = '';
+						}
+						$content = str_replace( '{' . $other_tag . '}', $name, $content );
+						break;
+
+					case 'last_name':
+						if ( is_user_logged_in() ) {
+							$user = wp_get_current_user();
+							$name = sanitize_text_field( $user->user_lastname );
+						} else {
+							$name = '';
+						}
+						$content = str_replace( '{' . $other_tag . '}', $name, $content );
+						break;
+
 					case 'referrer_url':
 						$referer = ! empty( $_SERVER['HTTP_REFERER'] ) ? $_SERVER['HTTP_REFERER'] : ''; // @codingStandardsIgnoreLine
 						$content = str_replace( '{' . $other_tag . '}', sanitize_text_field( $referer ), $content );
@@ -308,6 +472,14 @@ class EVF_Smart_Tags {
 						} else {
 							$content = str_replace( '{' . $tag . '}', '', $content );
 						}
+						break;
+					case 'form_id':
+						if ( isset( $form_data['id'] ) && ! empty( $form_data['id'] ) ) {
+							$form_id = $form_data['id'];
+						} else {
+							$form_id = '';
+						}
+						$content = str_replace( '{' . $other_tag . '}', $form_id, $content );
 						break;
 				}
 			}

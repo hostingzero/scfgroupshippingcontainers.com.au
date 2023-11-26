@@ -1,4 +1,9 @@
-<?php
+<?php // phpcs:ignore WordPress.Files.FileName.InvalidClassFileName
+/**
+ * Hustle_GHBlock_Abstract class
+ *
+ * @package Hustle
+ */
 
 /**
  * Class Hustle_GHBlock_Abstract
@@ -22,7 +27,7 @@ abstract class Hustle_GHBlock_Abstract {
 	 *
 	 * @var string
 	 */
-	protected $_slug;
+	protected $slug;
 
 	/**
 	 * Get block type
@@ -31,7 +36,7 @@ abstract class Hustle_GHBlock_Abstract {
 	 * @return string
 	 */
 	final public function get_slug() {
-		return $this->_slug;
+		return $this->slug;
 	}
 
 	/**
@@ -40,10 +45,10 @@ abstract class Hustle_GHBlock_Abstract {
 	 * @since 1.0 Gutenberg Addon
 	 */
 	public function init() {
-		// Register block
+		// Register block.
 		$this->register_block();
 
-		// Load block scripts
+		// Load block scripts.
 		add_action( 'enqueue_block_editor_assets', array( $this, 'load_assets' ) );
 	}
 
@@ -72,7 +77,7 @@ abstract class Hustle_GHBlock_Abstract {
 	 * Should be overriden in block class
 	 *
 	 * @since 1.0 Gutenberg Addon
-	 * @param array $properties Block properties
+	 * @param array $properties Block properties.
 	 *
 	 * @return string
 	 */
@@ -120,8 +125,8 @@ abstract class Hustle_GHBlock_Abstract {
 				$this->check_dependencies( $module );
 
 				$module_list[] = array(
-					'value' => $shortcode_id,
-					'label' => $module->module_name,
+					'value' => esc_html( $shortcode_id ),
+					'label' => esc_html( $module->module_name ),
 				);
 			}
 		}

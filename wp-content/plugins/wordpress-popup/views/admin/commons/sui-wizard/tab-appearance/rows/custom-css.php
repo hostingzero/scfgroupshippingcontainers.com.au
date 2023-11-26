@@ -16,77 +16,77 @@ if ( ! empty( $settings['style'] ) && 'cabriolet' === $settings['style'] ) {
 $selectors = array(
 	'modal_selectors'      => array(
 		array(
-			'name'     => 'Layout',
+			'name'     => __( 'Layout', 'hustle' ),
 			'selector' => ".hustle-layout $content_class ",
 		),
 		array(
-			'name'     => 'Title',
+			'name'     => __( 'Title', 'hustle' ),
 			'selector' => '.hustle-layout .hustle-title',
 		),
 		array(
-			'name'     => 'Subtitle',
+			'name'     => __( 'Subtitle', 'hustle' ),
 			'selector' => '.hustle-layout .hustle-subtitle ',
 		),
 		array(
-			'name'     => 'Feat. Image',
+			'name'     => __( 'Feat. Image', 'hustle' ),
 			'selector' => ".hustle-layout $content_class .hustle-image img ",
 		),
 		array(
-			'name'     => 'Main Content',
+			'name'     => __( 'Main Content', 'hustle' ),
 			'selector' => ".hustle-layout $content_class .hustle-group-content p ",
 		),
 		array(
-			'name'     => 'CTA Button',
+			'name'     => __( 'CTA Button', 'hustle' ),
 			'selector' => '.hustle-layout .hustle-button-cta ',
 		),
 	),
 
 	'form_selectors'       => array(
 		array(
-			'name'     => 'Form Container',
+			'name'     => __( 'Form Container', 'hustle' ),
 			'selector' => '.hustle-layout .hustle-layout-body .hustle-layout-form ',
 		),
 		array(
-			'name'     => 'Input',
+			'name'     => __( 'Input', 'hustle' ),
 			'selector' => '.hustle-layout .hustle-layout-body .hustle-layout-form .hustle-input ',
 		),
 		array(
-			'name'     => 'Submit',
+			'name'     => __( 'Submit', 'hustle' ),
 			'selector' => '.hustle-layout .hustle-layout-body .hustle-layout-form .hustle-button-submit ',
 		),
 		array(
-			'name'     => 'Success Container',
+			'name'     => __( 'Success Container', 'hustle' ),
 			'selector' => '.hustle-success ',
 		),
 		array(
-			'name'     => 'Success Message',
+			'name'     => __( 'Success Message', 'hustle' ),
 			'selector' => '.hustle-success .hustle-success-content p ',
 		),
 	),
 
 	'form_extra_selectors' => array(
 		array(
-			'name'     => 'Container',
+			'name'     => __( 'Container', 'hustle' ),
 			'selector' => '.hustle-layout .hustle-layout-body .hustle-form-options ',
 		),
 		array(
-			'name'     => 'Title',
+			'name'     => __( 'Title', 'hustle' ),
 			'selector' => '.hustle-layout .hustle-layout-body .hustle-form-options .hustle-group-title ',
 		),
 		array(
-			'name'     => 'Radio',
+			'name'     => __( 'Radio', 'hustle' ),
 			'selector' => '.hustle-layout .hustle-layout-body .hustle-radio span[aria-hidden]',
 		),
 		array(
-			'name'     => 'Radio (Label)',
+			'name'     => __( 'Radio (Label)', 'hustle' ),
 			'selector' => '.hustle-layout .hustle-layout-body .hustle-radio span:not([aria-hidden])',
 		),
 		array(
-			'name'     => 'Checkbox',
+			'name'     => __( 'Checkbox', 'hustle' ),
 			'selector' => '.hustle-layout .hustle-layout-body .hustle-checkbox span[aria-hidden]',
 		),
 		array(
-			'name'     => 'Checkbox (Label)',
+			'name'     => __( 'Checkbox (Label)', 'hustle' ),
 			'selector' => '.hustle-layout .hustle-layout-body .hustle-checkbox span:not([aria-hidden])',
 		),
 	),
@@ -94,7 +94,7 @@ $selectors = array(
 
 if ( Hustle_Module_Model::EMBEDDED_MODULE !== $module_type ) {
 	$selectors['modal_selectors'][] = array(
-		'name'     => 'Close Button',
+		'name'     => __( 'Close Button', 'hustle' ),
 		'selector' => '.hustle-button-close',
 	);
 }
@@ -120,9 +120,9 @@ if ( Hustle_Module_Model::EMBEDDED_MODULE !== $module_type ) {
 				<?php checked( $settings['customize_css'], '1' ); ?>
 			/>
 			<span class="sui-toggle-slider" aria-hidden="true"></span>
+			<span id="hustle-customize-label" class="sui-toggle-label"><?php esc_html_e( 'Enable custom CSS', 'hustle' ); ?></span>
 		</label>
 
-		<label for="hustle-customize-css"><?php esc_html_e( 'Enable custom CSS', 'hustle' ); ?></label>
 
 		<div class="sui-background-frame" data-toggle-content="customize-css">
 
@@ -167,7 +167,7 @@ if ( Hustle_Module_Model::EMBEDDED_MODULE !== $module_type ) {
 
 			<?php } ?>
 
-			<div id="hustle_custom_css" style="height: 210px;"><?php echo $settings['custom_css']; ?></div>
+			<div id="hustle_custom_css" style="height: 210px;"><?php echo wp_kses_post( wp_strip_all_tags( $settings['custom_css'] ) ); ?></div>
 
 		</div>
 

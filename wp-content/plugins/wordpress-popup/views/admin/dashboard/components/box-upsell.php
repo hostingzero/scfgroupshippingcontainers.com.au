@@ -9,7 +9,7 @@
  */
 
 $header_args = array(
-	'title'   => esc_html__( 'Hustle Pro', 'hustle' ),
+	'title'   => __( 'Hustle Pro', 'hustle' ),
 	'icon'    => 'hustle',
 	'pro_tag' => true,
 );
@@ -25,7 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 	<div class="sui-box-body">
 
-		<p><?php esc_html_e( 'Get Hustle Pro, our full lineup of WordPress marketing tools and more for free when you start your WPMU DEV membership.', 'hustle' ); ?></p>
+		<p><?php esc_html_e( 'Get Hustle Pro, our full lineup of WordPress marketing tools and more when you start your WPMU DEV membership.', 'hustle' ); ?></p>
 
 		<ul>
 			<li><span class="sui-icon-check sui-lg" aria-hidden="true"></span><?php esc_html_e( 'Unlimited Pop-ups, Slide-ins, Embeds, and Social Shares', 'hustle' ); ?></li>
@@ -36,7 +36,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<li><span class="sui-icon-check sui-lg" aria-hidden="true"></span><?php esc_html_e( 'The WPMU DEV Guarantee', 'hustle' ); ?></li>
 		</ul>
 
-		<p><a href="<?php echo esc_url( Opt_In_Utils::get_link( 'plugin', 'hustle_dashboard_upsellwidget_button' ) . '#choosing-a-template' ); ?>" class="sui-button sui-button-purple" target="_blank"><?php esc_html_e( 'Try Pro for FREE today!', 'hustle' ); ?></a></p>
+		<p><a href="<?php echo esc_url( Opt_In_Utils::get_link( 'plugin', 'hustle_dashboard_upsellwidget_button' ) . '#choosing-a-template' ); ?>" class="sui-button sui-button-purple" target="_blank"><?php esc_html_e( 'Upgrade to Pro', 'hustle' ); ?></a></p>
 
 	</div>
 

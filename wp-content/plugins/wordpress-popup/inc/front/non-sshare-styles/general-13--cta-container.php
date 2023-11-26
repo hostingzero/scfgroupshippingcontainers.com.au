@@ -6,9 +6,11 @@
  * @since 4.3.0
  */
 
-// phpcs:disable Generic.WhiteSpace.ScopeIndent.Incorrect
-
 $component = '.hustle-layout .hustle-cta-container';
+
+if ( ! empty( $content['cta_whole'] ) ) {
+	$style .= ' .hustle-whole-module-cta {cursor: pointer;}';
+}
 
 // SETTINGS: Margin.
 $margin_top    = ( '' !== $advanced['cta_cont_margin_top'] ) ? $advanced['cta_cont_margin_top'] . $advanced['cta_cont_margin_unit'] : '0';
@@ -61,7 +63,7 @@ $mobile_border_style = ( ! $is_mobile_enabled || ( $is_mobile_enabled && $defaul
 
 // ==================================================
 // Check if "Call to Action" button is enabled.
-if ( '1' === $content['show_cta'] ) {
+if ( '0' !== $content['show_cta'] ) {
 
 	$style .= ' ';
 

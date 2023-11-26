@@ -34,7 +34,7 @@ class Hustle_Provider_Utils {
 	 * @since 4.0.0
 	 * @var string
 	 */
-	public $_last_url_request;
+	public $last_url_request;
 
 	/**
 	 * Slug will be used as additional info in submission entries.
@@ -42,7 +42,7 @@ class Hustle_Provider_Utils {
 	 * @since 4.0.0
 	 * @var string
 	 */
-	public $_last_data_received;
+	public $last_data_received;
 
 	/**
 	 * Slug will be used as additional info in submission entries.
@@ -50,7 +50,7 @@ class Hustle_Provider_Utils {
 	 * @since 4.0
 	 * @var string
 	 */
-	public $_last_data_sent;
+	public $last_data_sent;
 
 	/**
 	 * Return the existing instance of Hustle_Provider_Utils, or create a new one if none exists.
@@ -73,8 +73,8 @@ class Hustle_Provider_Utils {
 	 * @return string
 	 */
 	final public function get_last_url_request() {
-		$last_url_request        = $this->_last_url_request;
-		$this->_last_url_request = null;
+		$last_url_request       = $this->last_url_request;
+		$this->last_url_request = null;
 
 		return $last_url_request;
 	}
@@ -87,9 +87,9 @@ class Hustle_Provider_Utils {
 	 * @return string
 	 */
 	final public function get_last_data_received( $unset = true ) {
-		$last_data_received = $this->_last_data_received;
+		$last_data_received = $this->last_data_received;
 		if ( $unset ) {
-			$this->_last_data_received = null;
+			$this->last_data_received = null;
 		}
 
 		return $last_data_received;
@@ -102,8 +102,8 @@ class Hustle_Provider_Utils {
 	 * @return string
 	 */
 	final public function get_last_data_sent() {
-		$last_data_sent        = $this->_last_data_sent;
-		$this->_last_data_sent = null;
+		$last_data_sent       = $this->last_data_sent;
+		$this->last_data_sent = null;
 
 		return $last_data_sent;
 	}
@@ -532,7 +532,7 @@ class Hustle_Provider_Utils {
 		}
 
 		if ( ! empty( $subtitle ) ) {
-			$html .= '<p class="sui-description">' . $subtitle . '</p>';
+			$html .= '<p class="sui-description">' . wp_kses_post( $subtitle ) . '</p>';
 		}
 
 		$html .= '</div>';
@@ -609,7 +609,7 @@ class Hustle_Provider_Utils {
 				'<%1$s class="sui-button-icon sui-tooltip %2$s" data-tooltip="%3$s" %4$s >',
 				$tag,
 				esc_attr( $action_class . $class ),
-				__( 'Refresh list', 'hustle' ),
+				esc_html__( 'Refresh list', 'hustle' ),
 				disabled( $disabled, true, false )
 			);
 				$html     .= '<span class="sui-loading-text" aria-hidden="true">';

@@ -81,9 +81,18 @@ $hide_after_subscription_desc = $is_optin ?
 				</option>
 			</select>
 
-			<div style="margin-top: 10px;" data-field-content="hide_after_subscription">
-				<?php Opt_In_Utils::get_cookie_saving_notice(); ?>
-			</div>
+			<?php
+			// Reset cookie settings.
+			$this->render(
+				'admin/commons/sui-wizard/tab-behaviour/reset-cookie-settings',
+				array(
+					'settings'           => $settings,
+					'data_field_content' => 'hide_after_subscription',
+					'option_prefix'      => 'after_optin_',
+					'description'        => __( 'This module will be visible again after this much time has passed since opt-in.', 'hustle' ),
+				)
+			);
+			?>
 
 		</div>
 
@@ -101,9 +110,47 @@ $hide_after_subscription_desc = $is_optin ?
 				<option value="no_show_on_post" <?php selected( $settings['hide_after_cta'], 'no_show_on_post' ); ?>><?php esc_html_e( 'No longer show this module on this post/page', 'hustle' ); ?></option>
 			</select>
 
-			<div style="margin-top: 10px;" data-field-content="hide_after_cta">
-				<?php Opt_In_Utils::get_cookie_saving_notice(); ?>
-			</div>
+			<?php
+			// Reset cookie settings.
+			$this->render(
+				'admin/commons/sui-wizard/tab-behaviour/reset-cookie-settings',
+				array(
+					'settings'           => $settings,
+					'data_field_content' => 'hide_after_cta',
+					'option_prefix'      => 'after_cta_',
+					'description'        => __( 'This module will be visible again after this much time has passed since CTA conversion.', 'hustle' ),
+				)
+			);
+			?>
+
+		</div>
+
+		<?php // SETTINGS: Visibility after CTA Button 2 conversion. ?>
+		<div class="sui-form-field" data-toggle-content="show-cta2">
+
+			<label class="sui-settings-label"><?php esc_html_e( 'Visibility after CTA ( Button 2 ) conversion', 'hustle' ); ?></label>
+
+			<?php /* translators: module type in small caps and in singular */ ?>
+			<span class="sui-description" style="margin-bottom: 10px;"><?php printf( esc_html__( 'Choose the %s visibility once a visitor has clicked on the CTA button 2.', 'hustle' ), esc_html( $smallcaps_singular ) ); ?></span>
+
+			<select class="sui-select hustle-select-with-container" data-attribute="hide_after_cta2" name="hide_after_cta2" data-content-on="no_show_on_post,no_show_all">
+				<option value="keep_show" <?php selected( $settings['hide_after_cta2'], 'keep_show' ); ?>><?php esc_html_e( 'Keep showing this module', 'hustle' ); ?></option>
+				<option value="no_show_all" <?php selected( $settings['hide_after_cta2'], 'no_show_all' ); ?>><?php esc_html_e( 'No longer show this module across the site', 'hustle' ); ?></option>
+				<option value="no_show_on_post" <?php selected( $settings['hide_after_cta2'], 'no_show_on_post' ); ?>><?php esc_html_e( 'No longer show this module on this post/page', 'hustle' ); ?></option>
+			</select>
+
+			<?php
+			// Reset cookie settings.
+			$this->render(
+				'admin/commons/sui-wizard/tab-behaviour/reset-cookie-settings',
+				array(
+					'settings'           => $settings,
+					'data_field_content' => 'hide_after_cta2',
+					'option_prefix'      => 'after_cta2_',
+					'description'        => __( 'This module will be visible again after this much time has passed since CTA ( Button 2 ) conversion.', 'hustle' ),
+				)
+			);
+			?>
 
 		</div>
 
@@ -113,7 +160,7 @@ $hide_after_subscription_desc = $is_optin ?
 
 			<label class="sui-settings-label"><?php esc_html_e( 'External form conversion behavior', 'hustle' ); ?></label>
 
-			<span class="sui-description"><?php printf( esc_html__( "If you have an external form in your %1\$s, choose how your %1\$s will behave on the conversion of that form. Note that this doesn't affect your external form submission behavior.", 'hustle' ), esc_html( $smallcaps_singular ) ); ?></span>
+			<span class="sui-description"><?php /* translators: module type in small caps and in singular */ printf( esc_html__( "If you have an external form in your %1\$s, choose how your %1\$s will behave on the conversion of that form. Note that this doesn't affect your external form submission behavior.", 'hustle' ), esc_html( $smallcaps_singular ) ); ?></span>
 
 			<div style="margin-top: 10px;">
 
@@ -124,8 +171,7 @@ $hide_after_subscription_desc = $is_optin ?
 						<?php if ( 'embedded' !== $module_type ) { ?>
 							<option value="close"
 								<?php selected( $settings['on_submit'], 'close' ); ?>>
-								<?php /* translators: module type in small caps and in singular */ ?>
-								<?php printf( esc_html__( 'Close the %s', 'hustle' ), esc_html( $smallcaps_singular ) ); ?>
+								<?php /* translators: module type in small caps and in singular */ printf( esc_html__( 'Close the %s', 'hustle' ), esc_html( $smallcaps_singular ) ); ?>
 							</option>
 						<?php } ?>
 

@@ -1,9 +1,15 @@
-<?php
+<?php // phpcs:ignore WordPress.Files.FileName.InvalidClassFileName
+/**
+ * Hustle_Infusion_Soft_Form_Settings class
+ *
+ * @package Hustle
+ */
+
 if ( ! class_exists( 'Hustle_Infusion_Soft_Form_Settings' ) ) :
 
 	/**
 	 * Class Hustle_Infusion_Soft_Form_Settings
-	 * Form Settings InfusionSoft Process
+	 * Form Settings Keap Process
 	 */
 	class Hustle_Infusion_Soft_Form_Settings extends Hustle_Provider_Form_Settings_Abstract {
 
@@ -23,7 +29,7 @@ if ( ! class_exists( 'Hustle_Infusion_Soft_Form_Settings' ) ) :
 		 */
 		public function form_settings_wizards() {
 			// already filtered on Abstract
-			// numerical array steps
+			// numerical array steps.
 			return array(
 				// 0
 				array(
@@ -42,7 +48,7 @@ if ( ! class_exists( 'Hustle_Infusion_Soft_Form_Settings' ) ) :
 		public function first_step_is_completed() {
 			$this->addon_form_settings = $this->get_form_settings_values();
 			if ( ! isset( $this->addon_form_settings['list_id'] ) ) {
-				// preliminary value
+				// preliminary value.
 				$this->addon_form_settings['list_id'] = 0;
 
 				return false;
@@ -56,12 +62,12 @@ if ( ! class_exists( 'Hustle_Infusion_Soft_Form_Settings' ) ) :
 		}
 
 		/**
-		 * Returns all settings and conditions for 1st step of InfusionSoft settings
+		 * Returns all settings and conditions for 1st step of Keap settings
 		 *
 		 * @since 3.0.5
 		 * @since 4.0 param $validate removed.
 		 *
-		 * @param array $submitted_data
+		 * @param array $submitted_data Submitted data.
 		 * @return array
 		 */
 		public function first_step_callback( $submitted_data ) {
@@ -73,13 +79,13 @@ if ( ! class_exists( 'Hustle_Infusion_Soft_Form_Settings' ) ) :
 			$is_submit                 = ! empty( $submitted_data['hustle_is_submit'] );
 
 			if ( $is_submit && empty( $submitted_data['list_id'] ) ) {
-				$error_message = __( 'The email list is required.', 'hustle' );
+				$error_message = esc_html__( 'The email list is required.', 'hustle' );
 			}
 
 			$options = $this->get_first_step_options( $current_data );
 
 			$step_html  = Hustle_Provider_Utils::get_integration_modal_title_markup(
-				__( 'Infusionsoft List', 'hustle' ),
+				__( 'Keap List', 'hustle' ),
 				__( 'Choose the list you want to send form data to.', 'hustle' )
 			);
 			$step_html .= Hustle_Provider_Utils::get_html_for_options( $options );
@@ -87,7 +93,7 @@ if ( ! class_exists( 'Hustle_Infusion_Soft_Form_Settings' ) ) :
 			if ( ! isset( $error_message ) ) {
 				$has_errors = false;
 			} else {
-				$step_html .= '<span class="sui-error-message">' . $error_message . '</span>';
+				$step_html .= '<span class="sui-error-message">' . esc_html( $error_message ) . '</span>';
 				$has_errors = true;
 			}
 
@@ -106,9 +112,9 @@ if ( ! class_exists( 'Hustle_Infusion_Soft_Form_Settings' ) ) :
 				'has_errors' => $has_errors,
 			);
 
-			// Save only after the step has been validated and there are no errors
+			// Save only after the step has been validated and there are no errors.
 			if ( $is_submit && ! $has_errors ) {
-				// Save additional data for submission's entry
+				// Save additional data for submission's entry.
 				if ( ! empty( $current_data['list_id'] ) ) {
 					$current_data['list_name'] = ! empty( $this->lists[ $current_data['list_id'] ] )
 						? $this->lists[ $current_data['list_id'] ] . ' (' . $current_data['list_id'] . ')' : $current_data['list_id'];
@@ -122,8 +128,8 @@ if ( ! class_exists( 'Hustle_Infusion_Soft_Form_Settings' ) ) :
 		/**
 		 * Refresh list array via API
 		 *
-		 * @param object $provider
-		 * @param string $global_multi_id
+		 * @param object $provider Provider.
+		 * @param string $global_multi_id Global multi ID.
 		 * @return array
 		 */
 		public function refresh_global_multi_lists( $provider, $global_multi_id ) {
@@ -147,7 +153,7 @@ if ( ! class_exists( 'Hustle_Infusion_Soft_Form_Settings' ) ) :
 		 *
 		 * @since 4.0
 		 *
-		 * @param array $submitted_data
+		 * @param array $submitted_data Submitted data.
 		 * @return array
 		 */
 		private function get_first_step_options( $submitted_data ) {

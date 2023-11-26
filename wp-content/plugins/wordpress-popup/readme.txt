@@ -1,14 +1,14 @@
 === Hustle - Email Marketing, Lead Generation, Optins, Popups ===
 Plugin Name: Hustle - Email Marketing, Lead Generation, Opt-ins, Popups
-Version: 7.5.0
+Version: 7.8.0
 Author: WPMU DEV
 Author URI: https://wpmudev.com/
 Contributors: WPMUDEV
 Tags: marketing, popup, optin, newsletter, subscription form, email, advertise, signup, mailing list, wordpress popup plugin, popup maker, pop-up, opt-in
 Requires at least: 5.2
-Tested up to: 6.0.1
-Requires PHP: 5.6.20
-Stable tag: 7.5.0
+Tested up to: 6.3
+Requires PHP: 7.4.33
+Stable tag: 7.8.0
 
 Setup email optin forms, popups, newsletter forms & subscription forms to generate email leads with the best marketing popup builder
 
@@ -185,92 +185,60 @@ No! Hustle gives you all the same settings and options as Hustle Pro. The only d
 
 == Changelog ==
 
-= 7.5.0 ( 2022-07-14 ) =
+= 7.8.0 ( 2023-06-27 ) =
 
-- New: Allow to select years and months in the date picker
-- New: Add search ability to listing pages
-- New: Capture value of a hidden field from query parameters
-- New: Add “Expand all” & “Collapse all” ability for Color Palettes settings
-- New: Ability to switch order on Email List filter
-- New: Add Gutenberg block for adding Unsubscribe shortcode
-- New: Support Unsubscribe Link in Automated Email
-- Enhance: PHP 8.1 compatibility
-- Enhance: Update chart.js library
-- Enhance: Tag and Category rules not working for WordPress Pages
-- Fix: Text mode removes break lines
-- Fix: Loading modules code everywhere with Static cache for simple Visibility Conditions
-- Fix: Fatal error with a huge amount of posts
-- Fix: Divi theme conflict with color picker
-- Fix: Unable to Save Palette when editing Color Palettes
+- Enhance: Require PHP 7.4 as the minimum supported version
+- Enhance: Prevent XSS vulnerability in translations
+- Enhance: Update the "InfusionSoft" brand name to "Keap"
+- Fix: Prevent page scroll to a Hustle Embed when a Pop-Up is closed
+- Fix: Custom Margin, Padding, and Border do not work for Slide-ins
+- Fix: Social Sharing module and Static Server Cache causing critical error
+- Fix: Issue with Close button on iOS
 
 
-= 7.4.13.1 ( 2022-03-16 ) =
+= 7.7.1 ( 2023-06-07 ) =
 
-- Fix: it's not possible to close the promo opt-in
-
-
-= 7.4.13 ( 2022-02-22 ) =
-
-- Enhance: Update integration with WPMU DEV Dashboard plugin
-- Fix: Social sharing icons are always vertical
-- Fix: Offset settings don't work in social share
+- Enhance: Performance improvements.
 
 
-= 7.4.12 ( 2022-02-07 ) =
+= 7.7.0 ( 2023-04-10 ) =
 
-- Enhance: Enable the analytics tracking by default for new modules
-- Enhance: Speed up query time by caching `attachment_url_to_postid` function
-- Enhance: Update wp-color-picker-alpha library to 3.0.2 version
-- Enhance: Hubspot migration to Granular CRM Scopes
-- Enhance: Plugin icon
-- Enhance: Preload icons font
-- Enhance: Caching some DB requests
-- Enhance: One-Click unsubscribe for local lists
-- Fix: Error when nothing is selected from Mailchimp Group Dropdown
-- Fix: Social Sharing modules do not follow the defined Mobile Breakpoint
-- Fix: It does not subscribe Mailchimp archived contacts
-- Fix: Schedule does not follow the relevant Timezone
-- Fix: Wildcard does not work well
-- Fix: `Never end the schedule` option issue
+- New: Ability to display modules N times per day/week/month/year
+- New: Make whole module a clickable CTA
+- Enhance: White Labeling plugin name
+- Enhance: Module accessibility
+- Enhance: Conditional visibility for modules with CTA when 2 buttons are used
+- Enhance: Allow customizing Close Button size
+- Enhance: Compatibility with PHP 8.2
+- Fix: W3C issue with style sheets
+- Fix: Compatibility issue with ACF Pro plugin
+- Fix: Divi theme issue - Triggering module using link ID does not work
 
 
-= 7.4.11 ( 2021-12-22 ) =
+= 7.6.6 ( 2023-03-30 ) =
 
-- Enhance: Plugin icon
-- Fix: Some Visibility conditions are not working with Static Cache
-
-
-= 7.4.10 ( 2021-12-06 ) =
-
-- Fix: Fatal error - Call to undefined method Hustle_SShare_Model::get_settings()
+- Enhance: Security improvements.
+- Fix: Helper Text font style cannot be reset
+- Fix: Title and Subtitle alignments are not working after reset
+- Fix: Embed Title is being cut off when you use Halloween Template
+- Fix: Redirect URL input field for CTA 2 doesn't show by default in Embed when starting from scratch
 
 
-= 7.4.9 ( 2021-12-06 ) =
+= 7.6.5 ( 2023-02-20 ) =
 
-- New: In-plugin tutorials
-- Enhance: Change modules order to by date instead of by name
-- Enhance: Support field shortcodes in automated e-mail subject
-- Enhance: Properly displaying modules with static cache enabled (use HUSTLE_STATIC_CACHE_ENABLED constant)
-- Enhance: Support "wd_hustle" shortcodes in the AJAX request
-- Enhance: White labeling support
-- Fix: User IP detection when Cloudflare is used
-- Fix: Get Response integration doesn't work with name field
-- Fix: Scroll percentages for slide-ins not working as expected
-- Fix: Hustle module doesn't work properly if it's inserted in Elementor Lightbox Element
-- Fix: Duplicate fields in MailerLite
-- Fix: Hero image is showing when custom branding image is empty
-- Fix: Firefox color picker doesn't show preview color on change
-- Fix: Constant Schedule set everyday over a 2 day period doesn't work
-- Fix: Imported json showing wrong error message when "upload" folder is not writable
-- Fix: Slide In width in %
-- Fix: Use proper Custom CSS selectors for Stacked layout
-- Fix: Conflict with Front-End Manager
-- Fix: Browser's selectors display as usual when High Contrast Mode is enabled
+- Enhance: Security improvements.
 
 
-= 7.4.8 ( 2021-11-03 ) =
+= 7.6.4 ( 2023-02-01 ) =
 
-- Enhance: White labeling support
+- Enhance: Security improvements.
+
+
+= 7.6.3 ( 2022-12-26 ) =
+
+- Fix: Loading issues with Mobile styles
+- Fix: Vertical Scroll bar in Slide-ins
+- Fix: Conflict with Elementor sliders
 
 [Changelog for previous versions](https://wpmudev.com/project/hustle/#view-changelog).
 
